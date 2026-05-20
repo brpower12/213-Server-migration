@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>213 서버 이민 신청</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0b0f;--bg2:#111318;--bg3:#181c24;--bg4:#1e2330;
+  --border:#242a38;--border2:#2e3650;
+  --text:#c8d0e0;--text2:#6a7490;--text3:#3a4260;
+  --accent:#4f8ef7;--accent2:#7aadff;
+  --gold:#d4a843;--gold2:#f0c040;
+  --green:#2eb87a;--red:#e04848;
+  --r:8px;--r2:14px;
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:0 0 6rem}
+body.lang-ja{font-family:'Noto Sans JP',sans-serif}
+body.lang-zh{font-family:'Noto Sans SC',sans-serif}
+.wrap{width:100%;max-width:500px;padding:0 1rem}
+
+/* 언어 */
+.lang-bar{display:flex;justify-content:flex-end;padding:.75rem 0 0;gap:6px}
+.lang-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 11px;font-size:12px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit}
+.lang-btn:hover{border-color:var(--border2);color:var(--text)}
+.lang-btn.on{background:rgba(79,142,247,.12);border-color:var(--accent);color:var(--accent2)}
+
+/* 헤더 */
+.hdr{padding:2rem 0 1.75rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2);font-size:11px;padding:4px 12px;border-radius:20px;margin-bottom:14px;letter-spacing:1px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hdr-title{font-family:'Black Han Sans',sans-serif;font-size:32px;letter-spacing:2px;color:#fff;margin-bottom:6px;line-height:1.2}
+.hdr-sub{font-size:13px;color:var(--text2);margin-bottom:8px}
+.hdr-credit{font-size:11px;color:var(--text3);letter-spacing:.3px}
+.hdr-credit b{color:rgba(212,168,67,.65);font-weight:400}
+
+/* 카드 */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:.875rem}
+.sec-label{font-size:10px;letter-spacing:2.5px;color:var(--text2);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-num{color:var(--accent);font-style:normal;font-size:10px}
+
+/* UID */
+.uid-row{display:flex;gap:8px}
+.uid-row input{flex:1}
+.btn-look{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:0 20px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s;flex-shrink:0;height:44px}
+.btn-look:hover{filter:brightness(1.12)}
+.btn-look:disabled{background:var(--border2);color:var(--text3);cursor:not-allowed;filter:none}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+.spin.on{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ply-card{display:none;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;margin-top:10px;align-items:center;gap:12px}
+.ply-card.on{display:flex;animation:fd .25s ease}
+@keyframes fd{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.ply-emo{font-size:26px;flex-shrink:0}
+.ply-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
+.ply-meta{font-size:12px;color:var(--text2)}
+.ply-sid{margin-left:auto;background:rgba(212,168,67,.12);color:var(--gold2);border:1px solid rgba(212,168,67,.25);font-size:11px;padding:3px 9px;border-radius:5px;white-space:nowrap;flex-shrink:0}
+
+.err-box{display:none;background:rgba(224,72,72,.08);border:1px solid rgba(224,72,72,.25);color:var(--red);font-size:12px;padding:9px 13px;border-radius:var(--r);margin-top:8px;line-height:1.5}
+.err-box.on{display:block}
+
+/* 입력 공통 */
+input[type=text],textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:11px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;height:44px}
+input[type=text]:focus,textarea:focus{border-color:var(--accent)}
+input[type=text]::placeholder,textarea::placeholder{color:var(--text3)}
+textarea{height:auto;resize:none}
+
+/* 혼자/그룹 */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px 12px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;user-select:none}
+.mode-btn:hover{border-color:var(--border2)}
+.mode-btn.on{background:rgba(79,142,247,.08);border-color:var(--accent)}
+.mode-ico{font-size:24px;flex-shrink:0}
+.mode-info{}
+.mode-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;transition:.2s}
+.mode-desc{font-size:11px;color:var(--text3);transition:.2s}
+.mode-btn.on .mode-name{color:var(--accent2)}
+.mode-btn.on .mode-desc{color:var(--text2)}
+
+/* 티어 */
+.tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tier-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 4px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:.2s;user-select:none;font-weight:500;line-height:1.3}
+.tier-btn:hover{border-color:var(--border2);color:var(--text)}
+.tier-btn[data-tier="일반"].on{background:rgba(130,140,155,.15);border-color:#7a8699;color:#aab4c4}
+.tier-btn[data-tier="중급"].on{background:rgba(56,132,220,.12);border-color:#3884dc;color:#6aaaf5}
+.tier-btn[data-tier="고급"].on{background:rgba(130,80,210,.12);border-color:#8250d2;color:#b080f0}
+.tier-btn[data-tier="상급"].on{background:rgba(230,130,30,.12);border-color:#e6821e;color:#f0a040}
+.tier-btn[data-tier="모름"].on{background:rgba(60,180,100,.1);border-color:#3cb464;color:#60d080}
+
+/* 전투력 */
+.cp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cp-item{}
+.cp-lbl{font-size:11px;color:var(--text2);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.cp-lbl svg{width:12px;height:12px;stroke:var(--gold);fill:none;flex-shrink:0}
+.cp-total{grid-column:1/-1}
+.cp-total input{border-color:rgba(212,168,67,.4)!important;background:rgba(212,168,67,.05)!important}
+.cp-total input:focus{border-color:var(--gold)!important}
+.cp-total .cp-lbl{color:var(--gold2)}
+.cp-total .cp-lbl svg{stroke:var(--gold2);width:13px;height:13px}
+
+/* 산업 */
+.ind-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.ind-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 4px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:.2s;user-select:none;font-weight:500}
+.ind-btn:hover{border-color:var(--border2);color:var(--text)}
+.ind-btn.on{background:rgba(79,142,247,.12);border-color:var(--accent);color:var(--accent2)}
+
+/* 1편대 */
+.sq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sq-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:18px 8px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:8px;user-select:none}
+.sq-btn:hover{border-color:var(--border2)}
+.sq-btn.on{background:rgba(79,142,247,.1);border-color:var(--accent)}
+.sq-ico{font-size:26px}
+.sq-name{font-size:13px;font-weight:500;color:var(--text2);transition:.2s}
+.sq-btn.on .sq-name{color:var(--accent2)}
+
+/* 추천인 */
+.field-label{font-size:13px;color:var(--text);font-weight:500;margin-bottom:6px;display:block}
+.field-tip{font-size:11px;color:var(--text3);margin-bottom:8px;line-height:1.6}
+
+/* 스크린샷 */
+.ss-tabs{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1rem}
+.ss-tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);background:var(--bg3);transition:.15s;border-right:1px solid var(--border);font-family:inherit}
+.ss-tab:last-child{border-right:none}
+.ss-tab.on{background:rgba(79,142,247,.1);color:var(--accent2)}
+.ss-pane{display:none}
+.ss-pane.on{display:block;animation:fd .2s ease}
+.ss-zone{border:2px dashed var(--border2);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;transition:.2s}
+.ss-zone:hover{border-color:var(--accent)}
+.ss-zone.has-file{border-style:solid;border-color:var(--green);background:rgba(46,184,122,.04)}
+.ss-zone-ico{font-size:26px;display:block;margin-bottom:8px}
+.ss-zone-txt{font-size:13px;color:var(--text2);margin-bottom:3px}
+.ss-zone-sub{font-size:11px;color:var(--text3)}
+.ss-fname{font-size:12px;color:var(--green);margin-top:6px;display:none}
+.ss-fname.on{display:block}
+.ss-guide{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-top:10px}
+.ss-guide-hdr{font-size:11px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ss-guide-hdr svg{width:12px;height:12px;stroke:var(--gold2);fill:none}
+.ss-step{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:11px;color:var(--text3);line-height:1.5}
+.ss-step:last-child{margin-bottom:0}
+.ss-step-n{width:16px;height:16px;border-radius:50%;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.3);color:var(--accent2);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.btn-sample{width:100%;background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.2);color:var(--gold);border-radius:var(--r);padding:9px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;transition:.2s}
+.btn-sample:hover{background:rgba(212,168,67,.13)}
+.btn-sample svg{width:13px;height:13px;stroke:currentColor;fill:none}
+input[type=file]{display:none}
+
+/* 저장 버튼 */
+.btn-save{width:100%;background:var(--green);color:#fff;border:none;border-radius:var(--r2);padding:16px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:.5rem;letter-spacing:.5px;transition:.2s}
+.btn-save:hover{filter:brightness(1.1)}
+.btn-save:active{transform:scale(.99)}
+
+/* 완료 화면 */
+.done{display:none;text-align:center;padding:3rem 1rem;animation:fd .4s ease}
+.done.on{display:block}
+.done-ring{width:76px;height:76px;border-radius:50%;background:rgba(46,184,122,.12);border:2px solid var(--green);margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center}
+.done-ring svg{width:34px;height:34px;stroke:var(--green);fill:none}
+.done-title{font-family:'Black Han Sans',sans-serif;font-size:26px;letter-spacing:1px;color:#fff;margin-bottom:8px}
+.done-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;white-space:pre-line}
+.done-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem;text-align:left;margin-bottom:1rem}
+.done-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)}
+.done-row:last-child{border-bottom:none}
+.done-row span:first-child{color:var(--text2);flex-shrink:0;margin-right:12px}
+.done-row span:last-child{color:var(--text);font-weight:500;text-align:right}
+.btn-excel{width:100%;background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.3);color:var(--green);border-radius:var(--r2);padding:13px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+.btn-excel:hover{background:rgba(46,184,122,.2)}
+.btn-excel svg{width:16px;height:16px;stroke:currentColor;fill:none}
+
+/* 관리 패널 */
+.admin-toggle{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;transition:.2s;font-family:inherit}
+.admin-toggle:hover{border-color:var(--border2);color:var(--text)}
+.admin-panel{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:.875rem}
+.admin-panel.on{display:block}
+.admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;gap:8px;flex-wrap:wrap}
+.admin-stat{font-size:12px;color:var(--text2)}
+.admin-stat strong{color:var(--accent2)}
+.btn-excel-sm{background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.28);color:var(--green);border-radius:var(--r);padding:7px 13px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.btn-excel-sm:hover{background:rgba(46,184,122,.2)}
+.btn-excel-sm svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.admin-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+.admin-table{width:100%;border-collapse:collapse;font-size:12px;min-width:580px}
+.admin-table th{background:var(--bg3);color:var(--text2);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;font-size:10px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+.admin-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
+.admin-table tr:last-child td{border-bottom:none}
+.admin-table tr:hover td{background:rgba(255,255,255,.02)}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.tag-p{background:rgba(79,142,247,.12);color:var(--accent2);border:1px solid rgba(79,142,247,.28)}
+.empty-msg{text-align:center;color:var(--text3);font-size:13px;padding:2rem 0}
+
+/* 비밀번호 모달 */
+.pw-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;align-items:center;justify-content:center;padding:1rem}
+.pw-bg.on{display:flex}
+.pw-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:1.5rem;width:100%;max-width:300px;text-align:center}
+.pw-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:5px}
+.pw-sub{font-size:12px;color:var(--text2);margin-bottom:1rem}
+.pw-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:11px;font-size:16px;text-align:center;letter-spacing:4px;font-family:inherit;outline:none;transition:.2s;margin-bottom:8px}
+.pw-inp:focus{border-color:var(--accent)}
+.pw-err{font-size:12px;color:var(--red);margin-bottom:8px;display:none;min-height:18px}
+.pw-err.on{display:block}
+.pw-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;transition:.15s}
+.pw-btn:hover{filter:brightness(1.1)}
+.pw-cancel{background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:8px;width:100%;font-family:inherit;display:block}
+.pw-cancel:hover{color:var(--text2)}
+
+/* 샘플 모달 */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:3000;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);max-width:360px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-hdr{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.modal-hdr span{font-size:14px;font-weight:500;color:var(--text)}
+.modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0 2px}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:16px;overflow-y:auto}
+.modal-body img{width:100%;border-radius:var(--r);border:1px solid var(--border)}
+.modal-cap{font-size:11px;color:var(--text2);margin-top:10px;line-height:1.6;padding:10px;background:var(--bg3);border-radius:var(--r)}
+</style>
+</head>
+<body class="lang-ko">
+<div class="wrap">
+
+  <!-- 언어 -->
+  <div class="lang-bar">
+    <button class="lang-btn on" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('zh')">中文</button>
+  </div>
+
+  <!-- 헤더 -->
+  <div class="hdr">
+    <div class="live-badge"><span class="live-dot"></span><span id="hdr-live">LIVE · 이민 신청 접수 중</span></div>
+    <div class="hdr-title">213</div>
+    <div class="hdr-sub" id="hdr-sub">다른 서버 → 213서버 합류</div>
+    <div class="hdr-credit">Designed by <b>213NXT 부앙</b></div>
+  </div>
+
+  <!-- FORM -->
+  <div id="main-form">
+
+    <!-- 01 플레이어 확인 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">01</span> <span id="t-sec1">플레이어 확인</span></div>
+      <div class="uid-row">
+        <input type="text" id="uid-inp" placeholder="게임 UID 입력 (13~16자리)" maxlength="16">
+        <button class="btn-look" id="look-btn" onclick="lookup()">
+          <span id="look-txt">조회</span>
+          <span class="spin" id="look-spin"></span>
+        </button>
+      </div>
+      <div class="err-box" id="uid-err"></div>
+      <div class="ply-card" id="ply-card">
+        <div class="ply-emo" id="ply-emo">⚔️</div>
+        <div style="flex:1;min-width:0">
+          <div class="ply-name" id="ply-name">-</div>
+          <div class="ply-meta" id="ply-meta">-</div>
+        </div>
+        <div class="ply-sid" id="ply-sid">#-</div>
+      </div>
+    </div>
+
+    <!-- 02 이동 방식 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">02</span> <span id="t-sec2">이동 방식</span></div>
+      <div class="mode-grid">
+        <div class="mode-btn on" data-mode="혼자" onclick="selMode(this)">
+          <div class="mode-ico">🧍</div>
+          <div class="mode-info">
+            <div class="mode-name" id="t-alone">혼자</div>
+            <div class="mode-desc" id="t-alone-desc">단독 이민</div>
+          </div>
+        </div>
+        <div class="mode-btn" data-mode="그룹" onclick="selMode(this)">
+          <div class="mode-ico">👥</div>
+          <div class="mode-info">
+            <div class="mode-name" id="t-group">그룹으로</div>
+            <div class="mode-desc" id="t-group-desc">연맹 이민</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 티어 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">03</span> <span id="t-sec3">티어</span></div>
+      <div class="tier-grid">
+        <div class="tier-btn" data-tier="일반" onclick="selTier(this)" id="t-tier1">일반</div>
+        <div class="tier-btn" data-tier="중급" onclick="selTier(this)" id="t-tier2">중급</div>
+        <div class="tier-btn" data-tier="고급" onclick="selTier(this)" id="t-tier3">고급</div>
+        <div class="tier-btn" data-tier="상급" onclick="selTier(this)" id="t-tier4">상급</div>
+        <div class="tier-btn" data-tier="모름" onclick="selTier(this)" id="t-tier5">모름</div>
+      </div>
+    </div>
+
+    <!-- 04 전투력 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">04</span> <span id="t-sec4">전투력 정보</span></div>
+      <div class="cp-grid">
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="t-cpBlack">블랙 머니</span></div>
+          <input type="text" id="cp-black" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span id="t-cpBuild">건축물 전투력</span></div>
+          <input type="text" id="cp-build" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg><span id="t-cpTech">과학기술 전투력</span></div>
+          <input type="text" id="cp-tech" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="t-cpTroop">부대 전투력</span></div>
+          <input type="text" id="cp-troop" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="t-cpHero">영웅 전투력</span></div>
+          <input type="text" id="cp-hero" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8zM5 18v3M19 18v3"/></svg><span id="t-cpVehicle">개조차 전투력</span></div>
+          <input type="text" id="cp-vehicle" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+        <div class="cp-item cp-total">
+          <div class="cp-lbl"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="t-cpMax">현재까지 최고 전투력</span></div>
+          <input type="text" id="cp-max" inputmode="numeric" placeholder="0" oninput="fmtCP(this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 산업 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">05</span> <span id="t-sec5">산업 선택</span></div>
+      <div class="ind-grid" id="ind-grid"></div>
+    </div>
+
+    <!-- 06 1편대 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">06</span> <span id="t-sec6">1편대 유형</span></div>
+      <div class="sq-grid">
+        <div class="sq-btn on" data-sq="파이터" onclick="selSq(this)">
+          <div class="sq-ico">⚔️</div>
+          <div class="sq-name" id="t-sq1">파이터</div>
+        </div>
+        <div class="sq-btn" data-sq="슈터" onclick="selSq(this)">
+          <div class="sq-ico">🎯</div>
+          <div class="sq-name" id="t-sq2">슈터</div>
+        </div>
+        <div class="sq-btn" data-sq="라이더" onclick="selSq(this)">
+          <div class="sq-ico">🏍️</div>
+          <div class="sq-name" id="t-sq3">라이더</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 추천인 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">07</span> <span id="t-sec7">추천인 / 지인 닉네임</span></div>
+      <div class="field-tip" id="t-recTip">이민을 소개해준 213 서버 유저 닉네임, 또는 이민 상담을 해준 분의 닉네임을 입력해주세요.</div>
+      <input type="text" id="recommender" placeholder="213 서버 유저 닉네임">
+    </div>
+
+    <!-- 08 스크린샷 -->
+    <div class="card">
+      <div class="sec-label"><span class="sec-num">08</span> <span id="t-sec8">스크린샷 인증</span></div>
+      <div class="ss-tabs">
+        <button class="ss-tab on" onclick="ssTab(0,this)" id="t-ssTab0">전투력 (CP)</button>
+        <button class="ss-tab" onclick="ssTab(1,this)" id="t-ssTab1">APC 차량</button>
+      </div>
+
+      <!-- CP 패널 -->
+      <div class="ss-pane on" id="ss-pane-0">
+        <div class="ss-zone" id="cp-zone" onclick="document.getElementById('cp-f').click()">
+          <span class="ss-zone-ico" id="cp-ico">📷</span>
+          <div class="ss-zone-txt" id="t-ssUpload">클릭하여 이미지 업로드</div>
+          <div class="ss-zone-sub" id="t-ssUploadSub">JPG, PNG 최대 10MB</div>
+          <div class="ss-fname" id="cp-fn"></div>
+        </div>
+        <input type="file" id="cp-f" accept="image/*" onchange="handleFile(this,'cp')">
+        <div class="ss-guide">
+          <div class="ss-guide-hdr">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="t-ssGuide">이렇게 찍어주세요</span>
+          </div>
+          <div class="ss-step"><span class="ss-step-n">1</span><span id="t-cpStep1">게임 내 내 프로필 → 더 많은 정보 클릭</span></div>
+          <div class="ss-step"><span class="ss-step-n">2</span><span id="t-cpStep2">전투력 탭이 바로 표시됩니다</span></div>
+          <div class="ss-step"><span class="ss-step-n">3</span><span id="t-cpStep3">건축물 / 과학기술 / 부대 / 영웅 / 개조차 / 최고 전투력이 모두 보이도록 캡처</span></div>
+        </div>
+        <button class="btn-sample" onclick="openModal('cp')">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="t-ssExample">예시 이미지 보기</span>
+        </button>
+      </div>
+
+      <!-- APC 패널 -->
+      <div class="ss-pane" id="ss-pane-1">
+        <div class="ss-zone" id="apc-zone" onclick="document.getElementById('apc-f').click()">
+          <span class="ss-zone-ico" id="apc-ico">🚗</span>
+          <div class="ss-zone-txt">클릭하여 이미지 업로드</div>
+          <div class="ss-zone-sub">JPG, PNG 최대 10MB</div>
+          <div class="ss-fname" id="apc-fn"></div>
+        </div>
+        <input type="file" id="apc-f" accept="image/*" onchange="handleFile(this,'apc')">
+        <div class="ss-guide">
+          <div class="ss-guide-hdr">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>이렇게 찍어주세요</span>
+          </div>
+          <div class="ss-step"><span class="ss-step-n">1</span><span id="t-apcStep1">게임 화면에서 내 APC 차량들이 모두 보이게 화면 조정</span></div>
+          <div class="ss-step"><span class="ss-step-n">2</span><span id="t-apcStep2">각 차량 위 전투력 수치(예: 5.5G)가 보이도록 캡처</span></div>
+        </div>
+        <button class="btn-sample" onclick="openModal('apc')">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>예시 이미지 보기</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-save" id="t-submit" onclick="save()">신청서 제출하기</button>
+  </div>
+
+  <!-- 완료 -->
+  <div class="done" id="done-screen">
+    <div class="done-ring">
+      <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="done-title" id="t-doneTitle">신청 완료!</div>
+    <div class="done-sub" id="t-doneSub">이민 신청이 접수되었습니다.
+운영진 검토 후 개별 연락드립니다.</div>
+    <div class="done-card" id="done-info"></div>
+    <button class="btn-excel" onclick="exportExcel()">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span id="t-excel">엑셀로 내보내기</span>
+    </button>
+  </div>
+
+  <!-- 운영진 패널 -->
+  <div style="margin-top:2rem">
+    <button class="admin-toggle" onclick="openPW()">
+      <span style="display:flex;align-items:center;gap:8px">
+        <svg style="width:14px;height:14px;stroke:currentColor;fill:none" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span id="t-adminBtn">운영진 관리 패널</span>
+      </span>
+      <span>🔒</span>
+    </button>
+    <div class="admin-panel" id="admin-panel">
+      <div class="admin-top">
+        <div class="admin-stat"><span id="t-adminTotal">총 신청자</span>: <strong id="admin-count">0</strong><span id="t-adminPpl">명</span></div>
+        <button class="btn-excel-sm" onclick="exportExcel()">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="t-excelSm">엑셀 내보내기</span>
+        </button>
+      </div>
+      <div id="admin-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 비밀번호 모달 -->
+<div class="pw-bg" id="pw-bg">
+  <div class="pw-box">
+    <div class="pw-title" id="t-pwTitle">운영진 전용</div>
+    <div class="pw-sub" id="t-pwSub">접근 비밀번호를 입력해주세요</div>
+    <input type="password" class="pw-inp" id="pw-inp" placeholder="••••••" maxlength="20">
+    <div class="pw-err" id="pw-err">비밀번호가 틀렸습니다</div>
+    <button class="pw-btn" id="t-pwOk" onclick="checkPW()">확인</button>
+    <button class="pw-cancel" id="t-pwCancel" onclick="closePW()">취소</button>
+  </div>
+</div>
+
+<!-- 샘플 모달 -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span id="modal-title"></span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <img id="modal-img" src="" alt="예시">
+      <div class="modal-cap" id="modal-cap"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 번역 데이터 ──────────────────────────────
+const LANG = {
+  ko:{
+    'hdr-live':'LIVE · 이민 신청 접수 중',
+    'hdr-sub':'다른 서버 → 213서버 합류',
+    't-sec1':'플레이어 확인','uid-inp':'게임 UID 입력 (13~16자리)','look-txt':'조회',
+    't-sec2':'이동 방식',
+    't-sec7':'추천인 / 지인 닉네임','t-alone':'혼자','t-alone-desc':'단독 이민',
+    't-group':'그룹으로','t-group-desc':'연맹 이민',
+    't-sec3':'티어',
+    't-tier1':'일반','t-tier2':'중급','t-tier3':'고급','t-tier4':'상급','t-tier5':'모름',
+    't-sec4':'전투력 정보',
+    't-cpBlack':'블랙 머니','t-cpBuild':'건축물 전투력','t-cpTech':'과학기술 전투력',
+    't-cpTroop':'부대 전투력','t-cpHero':'영웅 전투력','t-cpVehicle':'개조차 전투력',
+    't-cpMax':'현재까지 최고 전투력',
+    't-sec5':'산업 선택','ind-prefix':'산업 ',
+    't-sec6':'1편대 유형',
+    't-sq1':'파이터','t-sq2':'슈터','t-sq3':'라이더',
+    't-recLabel':'추천인 / 지인 닉네임',
+    't-recTip':'이민을 소개해준 213 서버 유저 닉네임, 또는 이민 상담을 해준 분의 닉네임을 입력해주세요.',
+    'recommender':'213 서버 유저 닉네임',
+    't-sec8':'스크린샷 인증',
+    't-ssTab0':'전투력 (CP)','t-ssTab1':'APC 차량',
+    't-ssUpload':'클릭하여 이미지 업로드','t-ssUploadSub':'JPG, PNG 최대 10MB',
+    't-ssGuide':'이렇게 찍어주세요','t-ssExample':'예시 이미지 보기',
+    't-cpStep1':'게임 내 내 프로필 → 더 많은 정보 클릭',
+    't-cpStep2':'전투력 탭이 바로 표시됩니다',
+    't-cpStep3':'건축물 / 과학기술 / 부대 / 영웅 / 개조차 / 최고 전투력이 모두 보이도록 캡처',
+    't-apcStep1':'게임 화면에서 내 APC 차량들이 모두 보이게 화면 조정',
+    't-apcStep2':'각 차량 위 전투력 수치(예: 5.5G)가 보이도록 캡처',
+    't-submit':'신청서 제출하기',
+    't-doneTitle':'신청 완료!',
+    't-doneSub':'이민 신청이 접수되었습니다.\n운영진 검토 후 개별 연락드립니다.',
+    't-excel':'엑셀로 내보내기','t-excelSm':'엑셀 내보내기',
+    't-adminBtn':'운영진 관리 패널','t-adminTotal':'총 신청자','t-adminPpl':'명',
+    't-pwTitle':'운영진 전용','t-pwSub':'접근 비밀번호를 입력해주세요',
+    't-pwOk':'확인','t-pwCancel':'취소','pw-err':'비밀번호가 틀렸습니다',
+    'errSame':'⚠ 이미 213 서버 플레이어입니다.',
+    'errNotFound':'플레이어를 찾을 수 없습니다. UID를 다시 확인해주세요.',
+    'errNet':'서버 연결 실패. 잠시 후 다시 시도해주세요.',
+    'errUID':'먼저 UID를 조회해주세요.','errInd':'산업을 선택해주세요.',
+    'errTier':'티어를 선택해주세요.','errMaxCp':'최고 전투력을 입력해주세요.',
+    'errRec':'추천인/지인 닉네임을 입력해주세요.',
+    'doneNick':'닉네임','doneFrom':'출발 서버','doneMode':'이동 방식','doneTier':'티어',
+    'doneMaxCp':'최고 전투력','doneInd':'산업','doneSquad':'1편대','doneRec':'추천인','doneTime':'신청 시각',
+    'cpModalTitle':'CP 스크린샷 예시','apcModalTitle':'APC 스크린샷 예시',
+    'cpModalCap':'프로필 → 더 많은 정보를 누르면 바로 전투력 화면이 나옵니다. 건축물 / 과학기술 / 부대 / 영웅 / 개조차 / 최고 전투력이 모두 보이도록 캡처해주세요.',
+    'apcModalCap':'게임 화면에서 모든 APC 차량과 각 차량의 전투력 수치(5.5G, 1.6G 등)가 보이도록 캡처해주세요.',
+    'adminHeaders':['닉네임','서버','방식','티어','최고CP','산업','편대','추천인','결정','시각'],
+    'noData':'데이터 없음','emptyList':'아직 신청자가 없습니다.'
+  },
+  en:{
+    'hdr-live':'LIVE · Migration Open',
+    'hdr-sub':'Other Server → Join Server 213',
+    't-sec1':'Player Lookup','uid-inp':'Enter Game UID (13–16 digits)','look-txt':'Search',
+    't-sec2':'Migration Type',
+    't-sec7':'Referrer / Friend','t-alone':'Solo','t-alone-desc':'Individual migration',
+    't-group':'Group','t-group-desc':'Alliance migration',
+    't-sec3':'Tier',
+    't-tier1':'Beginner','t-tier2':'Intermediate','t-tier3':'Advanced','t-tier4':'Elite','t-tier5':'Unknown',
+    't-sec4':'Combat Power',
+    't-cpBlack':'Black Money','t-cpBuild':'Building CP','t-cpTech':'Technology CP',
+    't-cpTroop':'Troop CP','t-cpHero':'Hero CP','t-cpVehicle':'APC CP',
+    't-cpMax':'All-time Highest CP',
+    't-sec5':'Industry','ind-prefix':'Industry ',
+    't-sec6':'1st Squad Type',
+    't-sq1':'Fighter','t-sq2':'Shooter','t-sq3':'Rider',
+    't-recLabel':'Referrer / Friend Nickname',
+    't-recTip':'Enter the nickname of the 213 player who referred you, or who guided your migration.',
+    'recommender':'213 Server Player Nickname',
+    't-sec8':'Screenshot Verification',
+    't-ssTab0':'Combat Power (CP)','t-ssTab1':'APC Vehicles',
+    't-ssUpload':'Click to upload image','t-ssUploadSub':'JPG, PNG up to 10MB',
+    't-ssGuide':'How to capture','t-ssExample':'View example image',
+    't-cpStep1':'In-game Profile → More Info button',
+    't-cpStep2':'Combat Power tab is shown directly',
+    't-cpStep3':'Capture: Building / Tech / Troop / Hero / APC / All-time High CP all visible',
+    't-apcStep1':'Adjust view so all your APC vehicles are visible',
+    't-apcStep2':'Capture with CP values (e.g. 5.5G) visible above each vehicle',
+    't-submit':'Submit Application',
+    't-doneTitle':'Submitted!',
+    't-doneSub':'Your application has been received.\nOur team will contact you after review.',
+    't-excel':'Export to Excel','t-excelSm':'Export Excel',
+    't-adminBtn':'Staff Admin Panel','t-adminTotal':'Total','t-adminPpl':' applicants',
+    't-pwTitle':'Staff Only','t-pwSub':'Enter the access password',
+    't-pwOk':'Confirm','t-pwCancel':'Cancel','pw-err':'Incorrect password',
+    'errSame':'⚠ Already a player on server 213.',
+    'errNotFound':'Player not found. Please check the UID.',
+    'errNet':'Connection failed. Please try again.',
+    'errUID':'Please look up your UID first.','errInd':'Please select an industry.',
+    'errTier':'Please select a tier.','errMaxCp':'Please enter your highest CP.',
+    'errRec':'Please enter a referrer nickname.',
+    'doneNick':'Nickname','doneFrom':'From','doneMode':'Type','doneTier':'Tier',
+    'doneMaxCp':'Highest CP','doneInd':'Industry','doneSquad':'Squad','doneRec':'Referrer','doneTime':'Time',
+    'cpModalTitle':'CP Screenshot Example','apcModalTitle':'APC Screenshot Example',
+    'cpModalCap':'In the Combat Power tab, capture so Building, Tech, Troop, Hero, APC, and All-time High CP are all visible.',
+    'apcModalCap':'Capture with all APC vehicles and their CP values (5.5G, 1.6G, etc.) visible.',
+    'adminHeaders':['Nickname','From','Type','Tier','Max CP','Industry','Squad','Referrer','Time'],
+    'noData':'No data','emptyList':'No applicants yet.'
+  },
+  ja:{
+    'hdr-live':'LIVE · 移住申請受付中',
+    'hdr-sub':'他サーバー → 213サーバー加入',
+    't-sec1':'プレイヤー確認','uid-inp':'ゲームUID入力（13〜16桁）','look-txt':'検索',
+    't-sec2':'移動方式',
+    't-sec7':'紹介者 / 知人','t-alone':'単独','t-alone-desc':'個人移住',
+    't-group':'グループ','t-group-desc':'連盟移住',
+    't-sec3':'ティア',
+    't-tier1':'一般','t-tier2':'中級','t-tier3':'上級','t-tier4':'エリート','t-tier5':'不明',
+    't-sec4':'戦闘力情報',
+    't-cpBlack':'ブラックマネー','t-cpBuild':'建築物戦闘力','t-cpTech':'科学技術戦闘力',
+    't-cpTroop':'部隊戦闘力','t-cpHero':'英雄戦闘力','t-cpVehicle':'改造車戦闘力',
+    't-cpMax':'最高戦闘力',
+    't-sec5':'産業選択','ind-prefix':'産業',
+    't-sec6':'第1分隊タイプ',
+    't-sq1':'ファイター','t-sq2':'シューター','t-sq3':'ライダー',
+    't-recLabel':'紹介者 / 知人ニックネーム',
+    't-recTip':'移住を紹介してくれた213サーバーのプレイヤーのニックネームを入力してください。',
+    'recommender':'213サーバーのニックネーム',
+    't-sec8':'スクリーンショット認証',
+    't-ssTab0':'戦闘力（CP）','t-ssTab1':'APC車両',
+    't-ssUpload':'クリックして画像をアップロード','t-ssUploadSub':'JPG・PNG 最大10MB',
+    't-ssGuide':'撮影方法','t-ssExample':'サンプル画像を見る',
+    't-cpStep1':'ゲーム内プロフィール → 詳細情報をクリック',
+    't-cpStep2':'戦闘力タブが直接表示されます',
+    't-cpStep3':'建築物 / 科技 / 部隊 / 英雄 / 改造車 / 最高戦闘力が全て見えるようにキャプチャ',
+    't-apcStep1':'全APC車両が見えるよう画面調整',
+    't-apcStep2':'各車両の戦闘力数値（5.5Gなど）が見えるようにキャプチャ',
+    't-submit':'申請書を提出する',
+    't-doneTitle':'申請完了！',
+    't-doneSub':'移住申請が受け付けられました。\nスタッフが確認後、個別にご連絡します。',
+    't-excel':'エクセルに出力','t-excelSm':'エクセル出力',
+    't-adminBtn':'運営スタッフパネル','t-adminTotal':'申請者合計','t-adminPpl':'名',
+    't-pwTitle':'スタッフ専用','t-pwSub':'アクセスパスワードを入力してください',
+    't-pwOk':'確認','t-pwCancel':'キャンセル','pw-err':'パスワードが違います',
+    'errSame':'⚠ すでに213サーバーのプレイヤーです。',
+    'errNotFound':'プレイヤーが見つかりません。UIDを確認してください。',
+    'errNet':'接続に失敗しました。','errUID':'先にUIDを検索してください。',
+    'errInd':'産業を選択してください。','errTier':'ティアを選択してください。',
+    'errMaxCp':'最高戦闘力を入力してください。','errRec':'紹介者のニックネームを入力してください。',
+    'doneNick':'ニックネーム','doneFrom':'出発','doneMode':'方式','doneTier':'ティア',
+    'doneMaxCp':'最高戦闘力','doneInd':'産業','doneSquad':'分隊','doneRec':'紹介者','doneTime':'申請時刻',
+    'cpModalTitle':'CP スクリーンショット例','apcModalTitle':'APC スクリーンショット例',
+    'cpModalCap':'戦闘力タブで全項目が見えるようにキャプチャしてください。',
+    'apcModalCap':'全APC車両と戦闘力数値が見えるようにキャプチャしてください。',
+    'adminHeaders':['ニックネーム','出発','方式','ティア','最高CP','産業','分隊','紹介者','時刻'],
+    'noData':'データなし','emptyList':'申請者はまだいません。'
+  },
+  zh:{
+    'hdr-live':'LIVE · 移民申请受理中',
+    'hdr-sub':'其他服务器 → 加入213服务器',
+    't-sec1':'玩家确认','uid-inp':'输入游戏UID（13~16位）','look-txt':'查询',
+    't-sec2':'移动方式',
+    't-sec7':'推荐人 / 熟人','t-alone':'单独','t-alone-desc':'个人移民',
+    't-group':'组队','t-group-desc':'联盟移民',
+    't-sec3':'段位',
+    't-tier1':'普通','t-tier2':'中级','t-tier3':'高级','t-tier4':'精英','t-tier5':'不清楚',
+    't-sec4':'战斗力信息',
+    't-cpBlack':'黑钱','t-cpBuild':'建筑战斗力','t-cpTech':'科技战斗力',
+    't-cpTroop':'部队战斗力','t-cpHero':'英雄战斗力','t-cpVehicle':'改装车战斗力',
+    't-cpMax':'历史最高战斗力',
+    't-sec5':'产业选择','ind-prefix':'产业',
+    't-sec6':'第1小队类型',
+    't-sq1':'战士','t-sq2':'射手','t-sq3':'骑手',
+    't-recLabel':'推荐人 / 熟人昵称',
+    't-recTip':'请输入介绍您来213服务器的玩家昵称，或为您提供移民咨询的玩家昵称。',
+    'recommender':'213服务器玩家昵称',
+    't-sec8':'截图验证',
+    't-ssTab0':'战斗力（CP）','t-ssTab1':'APC车辆',
+    't-ssUpload':'点击上传图片','t-ssUploadSub':'JPG、PNG，最大10MB',
+    't-ssGuide':'截图方法','t-ssExample':'查看示例图片',
+    't-cpStep1':'游戏内个人资料 → 点击更多信息',
+    't-cpStep2':'战斗力标签将直接显示',
+    't-cpStep3':'截图需包含：建筑 / 科技 / 部队 / 英雄 / 改装车 / 历史最高战斗力',
+    't-apcStep1':'调整视角使所有APC车辆可见',
+    't-apcStep2':'截图需显示各车辆战斗力数值（如5.5G）',
+    't-submit':'提交申请',
+    't-doneTitle':'申请成功！',
+    't-doneSub':'移民申请已受理。\n工作人员审核后将单独联系您。',
+    't-excel':'导出至Excel','t-excelSm':'导出Excel',
+    't-adminBtn':'运营管理面板','t-adminTotal':'申请者总计','t-adminPpl':'人',
+    't-pwTitle':'仅限工作人员','t-pwSub':'请输入访问密码',
+    't-pwOk':'确认','t-pwCancel':'取消','pw-err':'密码错误',
+    'errSame':'⚠ 已是213服务器玩家。',
+    'errNotFound':'找不到玩家，请重新确认UID。',
+    'errNet':'连接失败，请稍后重试。','errUID':'请先查询UID。',
+    'errInd':'请选择产业。','errTier':'请选择段位。',
+    'errMaxCp':'请输入历史最高战斗力。','errRec':'请输入推荐人昵称。',
+    'doneNick':'昵称','doneFrom':'出发服务器','doneMode':'方式','doneTier':'段位',
+    'doneMaxCp':'最高战斗力','doneInd':'产业','doneSquad':'小队','doneRec':'推荐人','doneTime':'申请时间',
+    'cpModalTitle':'CP截图示例','apcModalTitle':'APC截图示例',
+    'cpModalCap':'请在战斗力标签页截图，确保建筑、科技、部队、英雄、改装车及历史最高战斗力均可见。',
+    'apcModalCap':'请截图使所有APC车辆及其战斗力数值（5.5G、1.6G等）可见。',
+    'adminHeaders':['昵称','出发','方式','段位','最高CP','产业','小队','推荐人','时间'],
+    'noData':'无数据','emptyList':'暂无申请者。'
+  }
+};
+
+// ── 상태 변수 ─────────────────────────────────
+const API_URL   = 'https://darkwar.712019.xyz/api/player/';
+const ADMIN_PW  = '213nxt';   // ← 비밀번호 변경
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwYE8tK3dVLAGTsNCm1HuaR0EmbmTFGHfRwwEQ065Mkl4cmpxqk5t_ToQa1zFR21KSVbA/exec'; 여기서
+const EMOS = ['⚔️','🏹','🛡️','🔮','🗡️','🧙','💪','🎯'];
+let lang = 'ko';
+let pData = null;
+let selModeVal = '혼자';
+let selTierVal = null;
+let selIndVal = null;
+let selSqVal = '파이터';
+
+// ── DB ────────────────────────────────────────
+function getDB(){ try{ return JSON.parse(localStorage.getItem('dw213')||'[]') }catch{ return [] } }
+function saveDB(d){ localStorage.setItem('dw213', JSON.stringify(d)) }
+
+// ── 언어 전환 ─────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.body.className = 'lang-' + l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('on');
+
+  const t = LANG[l];
+  // 텍스트 id 매핑
+  Object.keys(t).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const tag = el.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') el.placeholder = t[id];
+    else el.textContent = t[id];
+  });
+
+  // hdr-sub는 일반 div
+  document.getElementById('hdr-sub').textContent = t['hdr-sub'];
+
+  // 산업 재생성
+  buildInd();
+}
+
+// ── 산업 버튼 생성 ────────────────────────────
+function buildInd() {
+  const grid = document.getElementById('ind-grid');
+  const prefix = LANG[lang]['ind-prefix'] || '산업 ';
+  grid.innerHTML = '';
+  for (let i = 1; i <= 12; i++) {
+    const d = document.createElement('div');
+    d.className = 'ind-btn' + (selIndVal === i ? ' on' : '');
+    d.dataset.ind = i;
+    d.textContent = prefix + i;
+    d.onclick = function() {
+      document.querySelectorAll('.ind-btn').forEach(b => b.classList.remove('on'));
+      this.classList.add('on');
+      selIndVal = parseInt(this.dataset.ind);
+    };
+    grid.appendChild(d);
+  }
+}
+
+// ── 선택 함수들 ───────────────────────────────
+function selMode(el) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  selModeVal = el.dataset.mode;
+}
+function selTier(el) {
+  document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  selTierVal = el.dataset.tier;
+}
+function selSq(el) {
+  document.querySelectorAll('.sq-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  selSqVal = el.dataset.sq;
+}
+
+// ── 숫자 쉼표 ─────────────────────────────────
+function fmtCP(inp) {
+  const pos = inp.selectionStart;
+  const raw = inp.value.replace(/,/g, '');
+  if (raw === '' || isNaN(raw)) { if(raw !== '') inp.value = raw.slice(0,-1); return; }
+  const formatted = parseInt(raw).toLocaleString('ko-KR');
+  inp.value = formatted;
+}
+function getRaw(id) {
+  return parseInt((document.getElementById(id).value || '0').replace(/,/g, '')) || 0;
+}
+
+// ── UID 조회 ──────────────────────────────────
+async function lookup() {
+  const uid = document.getElementById('uid-inp').value.trim();
+  if (!uid) return;
+  const t = LANG[lang];
+  const btn = document.getElementById('look-btn');
+  const spin = document.getElementById('look-spin');
+  const lookTxt = document.getElementById('look-txt');
+  const err = document.getElementById('uid-err');
+  const card = document.getElementById('ply-card');
+
+  btn.disabled = true;
+  spin.classList.add('on');
+  lookTxt.style.visibility = 'hidden';
+  err.classList.remove('on');
+  card.classList.remove('on');
+  pData = null;
+
+  try {
+    const res = await fetch(API_URL + uid);
+    const data = await res.json();
+    if (data.code === 0 && data.result) {
+      if (String(data.result.sid) === '213') {
+        err.textContent = t['errSame'];
+        err.classList.add('on');
+      } else {
+        pData = { ...data.result, uid };
+        document.getElementById('ply-name').textContent = data.result.name;
+        document.getElementById('ply-meta').textContent =
+          'Lv.' + data.result.level + ' · ' +
+          (data.result.platform === 'market_global' ?
+            (lang === 'ko' ? '글로벌' : 'Global') : data.result.platform);
+        document.getElementById('ply-sid').textContent = '#' + data.result.sid;
+        document.getElementById('ply-emo').textContent = EMOS[Math.floor(Math.random() * EMOS.length)];
+        card.classList.add('on');
+      }
+    } else {
+      err.textContent = t['errNotFound'];
+      err.classList.add('on');
+    }
+  } catch(e) {
+    err.textContent = t['errNet'];
+    err.classList.add('on');
+  }
+
+  btn.disabled = false;
+  spin.classList.remove('on');
+  lookTxt.style.visibility = 'visible';
+}
+document.getElementById('uid-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') lookup();
+});
+
+// ── 스크린샷 탭 ───────────────────────────────
+function ssTab(idx, el) {
+  document.querySelectorAll('.ss-tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.ss-pane').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ss-pane-' + idx).classList.add('on');
+}
+
+// ── 파일 업로드 ───────────────────────────────
+function handleFile(inp, type) {
+  if (!inp.files[0]) return;
+  const zone = document.getElementById(type + '-zone');
+  const fnEl = document.getElementById(type + '-fn');
+  const ico  = document.getElementById(type + '-ico');
+  zone.classList.add('has-file');
+  if (ico) ico.textContent = '✅';
+  fnEl.textContent = '✓ ' + inp.files[0].name;
+  fnEl.classList.add('on');
+}
+
+// ── 샘플 모달 ─────────────────────────────────
+function openModal(type) {
+  const t = LANG[lang];
+  document.getElementById('modal-img').src = type === 'cp' ? 'sample-cp.png' : 'sample-apc.png';
+  document.getElementById('modal-title').textContent = type === 'cp' ? t['cpModalTitle'] : t['apcModalTitle'];
+  document.getElementById('modal-cap').textContent   = type === 'cp' ? t['cpModalCap']   : t['apcModalCap'];
+  document.getElementById('modal-bg').classList.add('on');
+}
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('on');
+}
+
+// ── 비밀번호 ──────────────────────────────────
+function openPW() {
+  const panel = document.getElementById('admin-panel');
+  if (panel.classList.contains('on')) { panel.classList.remove('on'); return; }
+  document.getElementById('pw-inp').value = '';
+  document.getElementById('pw-err').classList.remove('on');
+  document.getElementById('pw-bg').classList.add('on');
+  setTimeout(() => document.getElementById('pw-inp').focus(), 120);
+}
+function closePW() {
+  document.getElementById('pw-bg').classList.remove('on');
+}
+function checkPW() {
+  if (document.getElementById('pw-inp').value === ADMIN_PW) {
+    closePW();
+    document.getElementById('admin-panel').classList.add('on');
+    renderAdmin();
+  } else {
+    document.getElementById('pw-err').classList.add('on');
+    document.getElementById('pw-inp').value = '';
+    document.getElementById('pw-inp').focus();
+  }
+}
+document.getElementById('pw-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPW();
+  if (e.key === 'Escape') closePW();
+});
+
+// ── 제출 ──────────────────────────────────────
+function save() {
+  const t = LANG[lang];
+  if (!pData)       { alert(t['errUID']);   return; }
+  if (!selTierVal)  { alert(t['errTier']);  return; }
+  if (!selIndVal)   { alert(t['errInd']);   return; }
+  if (!getRaw('cp-max')) { alert(t['errMaxCp']); return; }
+  const rec = document.getElementById('recommender').value.trim();
+  if (!rec) { alert(t['errRec']); return; }
+
+  const entry = {
+    id: Date.now(),
+    registeredAt: new Date().toLocaleString('ko-KR'),
+    name: pData.name, uid: pData.uid, fromSid: pData.sid, level: pData.level,
+    mode: selModeVal, tier: selTierVal,
+    blackMoney: getRaw('cp-black'), cpBuild: getRaw('cp-build'),
+    cpTech: getRaw('cp-tech'), cpTroop: getRaw('cp-troop'),
+    cpHero: getRaw('cp-hero'), cpVehicle: getRaw('cp-vehicle'),
+    cpMax: getRaw('cp-max'),
+    industry: selIndVal, squad: selSqVal, recommender: rec, status: '검토중'
+  };
+  const db = getDB(); db.push(entry); saveDB(db);
+
+  // ── Google Sheets 전송 ────────────────────────────
+  if (SHEET_URL) {
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    }).catch(() => {}); // 실패해도 폼은 정상 동작
+  }
+
+  const fmtN = n => n ? Number(n).toLocaleString('ko-KR') : '0';
+  const indPrefix = LANG[lang]['ind-prefix'] || '산업 ';
+  document.getElementById('done-info').innerHTML = `
+    <div class="done-row"><span>${t['doneNick']}</span><span>${entry.name}</span></div>
+    <div class="done-row"><span>${t['doneFrom']}</span><span>#${entry.fromSid} → #213</span></div>
+    <div class="done-row"><span>${t['doneMode']}</span><span>${entry.mode}</span></div>
+    <div class="done-row"><span>${t['doneTier']}</span><span>${entry.tier}</span></div>
+    <div class="done-row"><span>${t['doneMaxCp']}</span><span>${fmtN(entry.cpMax)}</span></div>
+    <div class="done-row"><span>${t['doneInd']}</span><span>${indPrefix}${entry.industry}</span></div>
+    <div class="done-row"><span>${t['doneSquad']}</span><span>${entry.squad}</span></div>
+    <div class="done-row"><span>${t['doneRec']}</span><span>${entry.recommender}</span></div>
+    <div class="done-row"><span>${t['doneTime']}</span><span>${entry.registeredAt}</span></div>
+  `;
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('done-screen').classList.add('on');
+}
+
+// ── 관리 패널 ─────────────────────────────────
+function renderAdmin() {
+  const db = getDB();
+  const t = LANG[lang];
+  document.getElementById('admin-count').textContent = db.length;
+  const el = document.getElementById('admin-list');
+  if (!db.length) { el.innerHTML = `<div class="empty-msg">${t['emptyList']}</div>`; return; }
+  const fmtN = n => n ? Number(n).toLocaleString('ko-KR') : '0';
+  const prefix = LANG[lang]['ind-prefix'] || '산업 ';
+  const h = t['adminHeaders'];
+  el.innerHTML = `<div class="admin-wrap"><table class="admin-table">
+    <thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead>
+    <tbody>${db.map(r=>`<tr>
+      <td><strong>${r.name}</strong></td>
+      <td>#${r.fromSid}</td>
+      <td>${r.mode}</td>
+      <td>${r.tier}</td>
+      <td>${fmtN(r.cpMax)}</td>
+      <td>${prefix}${r.industry}</td>
+      <td>${r.squad}</td>
+      <td>${r.recommender}</td>
+      <td style="font-size:11px;color:var(--text2)">${r.registeredAt}</td>
+    </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+// ── 엑셀 내보내기 ─────────────────────────────
+function exportExcel() {
+  const db = getDB();
+  const t = LANG[lang];
+  if (!db.length) { alert(t['noData']); return; }
+  const prefix = LANG[lang]['ind-prefix'] || '산업 ';
+  const rows = db.map(r => ({
+    [t['doneTime']]: r.registeredAt,
+    [t['doneNick']]: r.name, 'UID': r.uid,
+    [t['doneFrom']]: '#' + r.fromSid, 'Level': r.level,
+    [t['doneMode']]: r.mode, [t['doneTier']]: r.tier,
+    [t['t-cpBlack']||'블랙 머니']: Number(r.blackMoney),
+    [t['t-cpBuild']||'건축물']: Number(r.cpBuild),
+    [t['t-cpTech']||'과학기술']: Number(r.cpTech),
+    [t['t-cpTroop']||'부대']: Number(r.cpTroop),
+    [t['t-cpHero']||'영웅']: Number(r.cpHero),
+    [t['t-cpVehicle']||'개조차']: Number(r.cpVehicle),
+    [t['doneMaxCp']]: Number(r.cpMax),
+    [t['doneInd']]: prefix + r.industry,
+    [t['doneSquad']]: r.squad,
+    [t['doneRec']]: r.recommender,
+    '상태': r.status
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [18,12,18,8,6,8,8,14,14,14,12,12,12,14,8,8,12,6].map(w=>({wch:w}));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '213 Migration');
+  XLSX.writeFile(wb, '213_migration_' + new Date().toISOString().slice(0,10) + '.xlsx');
+}
+
+// ── 초기화 ────────────────────────────────────
+setLang('ko');
+</script>
+</body>
+</html>
