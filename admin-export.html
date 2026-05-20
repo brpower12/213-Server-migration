@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>213 이민자 관리 — 운영진</title>
+<title>213 이민자 관리</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -17,89 +17,123 @@
   --r:8px;--r2:14px;
 }
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 4rem}
-
-/* 상단 헤더 */
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
 .top-left{display:flex;align-items:center;gap:12px}
-.logo{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#fff;letter-spacing:1px}
+.logo{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#fff}
 .logo span{color:var(--accent2)}
 .badge-live{display:inline-flex;align-items:center;gap:5px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2);font-size:11px;padding:3px 10px;border-radius:20px}
-.badge-live i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite;flex-shrink:0}
+.badge-live i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.top-right{display:flex;gap:8px}
+.top-right{display:flex;gap:8px;flex-wrap:wrap}
 .btn{border-radius:var(--r);padding:9px 16px;font-size:13px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;border:none;font-weight:500}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
 .btn-green{background:rgba(46,184,122,.15);border:1px solid rgba(46,184,122,.35);color:var(--green)}
 .btn-green:hover{background:rgba(46,184,122,.25)}
 .btn-accent{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.35);color:var(--accent2)}
 .btn-accent:hover{background:rgba(79,142,247,.25)}
 .btn-red{background:rgba(224,72,72,.12);border:1px solid rgba(224,72,72,.3);color:#ff7070}
 .btn-red:hover{background:rgba(224,72,72,.22)}
-.btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
 
-/* 통계 카드 */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+/* 통계 */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1rem}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px}
-.stat-label{font-size:11px;color:var(--text2);margin-bottom:6px;letter-spacing:.5px}
-.stat-value{font-family:'Black Han Sans',sans-serif;font-size:24px;color:#fff}
-.stat-value.green{color:var(--green)}
-.stat-value.blue{color:var(--accent2)}
-.stat-value.gold{color:var(--gold2)}
-.stat-value.red{color:#ff7070}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.stat-value{font-family:'Black Han Sans',sans-serif;font-size:24px}
+.stat-value.blue{color:var(--accent2)}.stat-value.green{color:var(--green)}
+.stat-value.gold{color:var(--gold2)}.stat-value.red{color:#ff7070}
+.stat-value.white{color:#fff}
 .stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
 
-/* 슬롯 현황 */
-.slot-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1.5rem}
-.slot-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem}
-.slot-title{font-size:11px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.slot-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.slot-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
-.slot-item:last-child{border-bottom:none}
-.tier-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 10px;border-radius:5px;font-weight:500}
+/* 설정 카드 */
+.cfg-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:1rem}
+.cfg-title{font-size:10px;letter-spacing:2.5px;color:var(--text2);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.cfg-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* 슬롯 설정 */
+.slot-cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.slot-cfg-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.slot-cfg-inp{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:14px;font-family:inherit;outline:none;width:70px;text-align:center;font-weight:700}
+.slot-cfg-inp:focus{border-color:var(--accent)}
+.cfg-save-btn{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:var(--accent2);border-radius:var(--r);padding:9px 16px;font-size:12px;font-family:inherit;cursor:pointer;transition:.15s;margin-top:10px}
+.cfg-save-btn:hover{background:rgba(79,142,247,.25)}
+
+/* 등급 기준 */
+.grade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.grade-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.grade-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.grade-range{display:flex;align-items:center;gap:6px}
+.grade-inp{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 8px;font-size:13px;font-family:inherit;outline:none;width:80px;text-align:center}
+.grade-inp:focus{border-color:var(--accent)}
+.grade-unit{font-size:11px;color:var(--text3)}
+
+/* 티어 뱃지 */
+.tier-pill{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:5px;font-weight:500;white-space:nowrap}
 .tier-일반{background:rgba(130,140,155,.15);border:1px solid #7a8699;color:#aab4c4}
 .tier-중급{background:rgba(56,132,220,.12);border:1px solid #3884dc;color:#6aaaf5}
 .tier-고급{background:rgba(130,80,210,.12);border:1px solid #8250d2;color:#b080f0}
-.tier-상급{background:rgba(230,130,30,.12);border:1px solid #e6821e;color:#f0a040}
+.tier-특급{background:rgba(230,130,30,.12);border:1px solid #e6821e;color:#f0a040}
 .tier-모름{background:rgba(60,180,100,.1);border:1px solid #3cb464;color:#60d080}
-.slot-count{font-weight:700;color:var(--text);font-size:14px}
+
+/* 슬롯 현황 */
+.slot-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.slot-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem}
+.slot-title{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.slot-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.slot-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.slot-item:last-child{border-bottom:none}
 .slot-remain{color:var(--gold2);font-weight:700;font-size:15px}
+
+/* 비밀번호 변경 */
+.pw-change-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pw-inp-s{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:9px 12px;font-size:14px;font-family:inherit;outline:none;flex:1;min-width:130px}
+.pw-inp-s:focus{border-color:var(--accent)}
+.pw-change-btn{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:var(--accent2);border-radius:var(--r);padding:9px 16px;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.pw-change-btn:hover{background:rgba(79,142,247,.25)}
 
 /* 테이블 */
 .table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem}
-.table-top{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.table-top{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .table-top-title{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
-.table-top-title svg{width:16px;height:16px;stroke:var(--accent2);fill:none}
+.table-top-title svg{width:15px;height:15px;stroke:var(--accent2);fill:none}
 .filter-row{display:flex;gap:6px;flex-wrap:wrap}
 .filter-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit}
 .filter-btn:hover{border-color:var(--border2);color:var(--text)}
 .filter-btn.on{background:rgba(79,142,247,.1);border-color:var(--accent);color:var(--accent2)}
 .tbl-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:700px}
-thead th{background:var(--bg3);color:var(--text2);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;font-size:11px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
-tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px;vertical-align:middle}
+table{width:100%;border-collapse:collapse;min-width:1000px}
+thead th{background:var(--bg3);color:var(--text2);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;font-size:10px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text);font-size:12px;vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:rgba(255,255,255,.02)}
-.name-cell{font-weight:700;color:#fff}
+.name-cell{font-weight:700;color:#fff;font-size:13px}
+.uid-cell{font-size:10px;color:var(--text3);font-family:monospace;margin-top:2px}
 .server-pill{display:inline-block;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold);font-size:11px;padding:2px 7px;border-radius:4px}
-.mode-pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px}
+.mode-pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;white-space:nowrap}
 .mode-혼자{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2)}
 .mode-연맹{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold2)}
-.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;border:none;font-family:inherit;font-weight:500}
+/* 티어 드롭다운 */
+.tier-select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:3px 6px;font-size:11px;font-family:inherit;outline:none;cursor:pointer}
+.tier-select:focus{border-color:var(--accent)}
+/* 결정 */
+.status-pill{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;border:none;font-family:inherit;font-weight:500;white-space:nowrap}
 .status-검토중{background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.28);color:var(--accent2)}
 .status-수락{background:rgba(46,184,122,.12);border:1px solid rgba(46,184,122,.28);color:var(--green)}
 .status-거절{background:rgba(224,72,72,.1);border:1px solid rgba(224,72,72,.25);color:#ff7070}
-.action-cell{display:flex;gap:4px}
-.act-btn{border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-family:inherit;cursor:pointer;transition:.15s}
-.act-ok{background:rgba(46,184,122,.15);color:var(--green)}
-.act-ok:hover{background:rgba(46,184,122,.25)}
-.act-no{background:rgba(224,72,72,.1);color:#ff7070}
-.act-no:hover{background:rgba(224,72,72,.2)}
-.act-reset{background:rgba(79,142,247,.1);color:var(--accent2)}
-.act-reset:hover{background:rgba(79,142,247,.2)}
-.cp-cell{font-variant-numeric:tabular-nums;font-size:12px;color:var(--text2)}
-.cp-max{color:var(--gold2);font-weight:500}
+.action-cell{display:flex;gap:4px;flex-wrap:wrap}
+.act-btn{border:none;border-radius:4px;padding:4px 8px;font-size:11px;font-family:inherit;cursor:pointer;transition:.15s;white-space:nowrap}
+.act-ok{background:rgba(46,184,122,.15);color:var(--green)}.act-ok:hover{background:rgba(46,184,122,.25)}
+.act-no{background:rgba(224,72,72,.1);color:#ff7070}.act-no:hover{background:rgba(224,72,72,.2)}
+.act-reset{background:rgba(79,142,247,.1);color:var(--accent2)}.act-reset:hover{background:rgba(79,142,247,.2)}
+.act-del{background:rgba(100,100,100,.15);color:var(--text2)}.act-del:hover{background:rgba(224,72,72,.15);color:#ff7070}
+.cp-gold{color:var(--gold2);font-weight:500}
+.cp-purple{color:#b080f0;font-weight:500}
+.cp-blue{color:#6aaaf5;font-size:11px}
 .empty-row td{text-align:center;color:var(--text3);padding:2.5rem;font-size:13px}
+.btn-excel-sm{background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.28);color:var(--green);border-radius:var(--r);padding:7px 13px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.btn-excel-sm:hover{background:rgba(46,184,122,.2)}
+.btn-excel-sm svg{width:13px;height:13px;stroke:currentColor;fill:none}
 
-/* 비밀번호 */
+/* 비밀번호 모달 */
 .pw-bg{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;padding:1rem}
 .pw-bg.hide{display:none}
 .pw-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:2rem;width:100%;max-width:300px;text-align:center}
@@ -107,7 +141,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .pw-sub{font-size:12px;color:var(--text2);margin-bottom:1.25rem}
 .pw-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:12px;font-size:16px;text-align:center;letter-spacing:5px;font-family:inherit;outline:none;transition:.2s;margin-bottom:8px}
 .pw-inp:focus{border-color:var(--accent)}
-.pw-err{font-size:12px;color:var(--red);margin-bottom:8px;min-height:18px;display:none}
+.pw-err{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px;display:none}
 .pw-err.on{display:block}
 .pw-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer}
 .pw-btn:hover{filter:brightness(1.1)}
@@ -115,10 +149,9 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </head>
 <body>
 
-<!-- 비밀번호 -->
 <div class="pw-bg" id="pw-bg">
   <div class="pw-box">
-    <div class="pw-logo">213 <span style="color:var(--accent2)">NXT</span></div>
+    <div class="pw-logo">213 <span style="color:var(--accent2)">SERVER</span></div>
     <div class="pw-sub">운영진 전용 관리 패널</div>
     <input type="password" class="pw-inp" id="pw-inp" placeholder="••••••" maxlength="20">
     <div class="pw-err" id="pw-err">비밀번호가 틀렸습니다</div>
@@ -127,25 +160,24 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <div id="main" style="display:none">
-
-  <!-- 상단 -->
+  <div id="loading-bar" style="display:none;text-align:center;padding:2rem;color:var(--text2);font-size:13px">
+    <div style="width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 12px"></div>
+    Google Sheets에서 데이터 불러오는 중...
+  </div>
   <div class="top">
     <div class="top-left">
-      <div class="logo">213 <span>NXT</span> 이민자 관리</div>
+      <div class="logo">213 <span>SERVER</span> 이민자 관리</div>
       <div class="badge-live"><i></i> LIVE</div>
     </div>
     <div class="top-right">
       <button class="btn btn-accent" onclick="renderAll()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        새로고침
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침
       </button>
       <button class="btn btn-green" onclick="exportExcel()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        엑셀 내보내기
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>엑셀 내보내기
       </button>
       <button class="btn btn-red" onclick="clearAll()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        전체 삭제
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>전체 삭제
       </button>
     </div>
   </div>
@@ -153,292 +185,307 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
   <!-- 통계 -->
   <div class="stats" id="stats"></div>
 
-  <!-- 슬롯 & 티어 -->
+  <!-- 슬롯 수 설정 -->
+  <div class="cfg-card">
+    <div class="cfg-title">슬롯 수 설정</div>
+    <div class="slot-cfg-grid" id="slot-cfg-grid"></div>
+    <button class="cfg-save-btn" onclick="saveSlots()">💾 슬롯 설정 저장</button>
+  </div>
+
+  <!-- 등급 기준 설정 -->
+  <div class="cfg-card">
+    <div class="cfg-title">등급 기준 설정 (이민 전투력 만 단위)</div>
+    <div class="grade-grid" id="grade-grid"></div>
+    <button class="cfg-save-btn" onclick="saveGrades()">💾 등급 기준 저장</button>
+  </div>
+
+  <!-- 비밀번호 변경 -->
+  <div class="cfg-card">
+    <div class="cfg-title">관리자 비밀번호 변경</div>
+    <div class="pw-change-row">
+      <input type="password" class="pw-inp-s" id="pw-new" placeholder="새 비밀번호" maxlength="20">
+      <input type="password" class="pw-inp-s" id="pw-confirm" placeholder="비밀번호 확인" maxlength="20">
+      <button class="pw-change-btn" onclick="changePW()">변경하기</button>
+    </div>
+  </div>
+
+  <!-- 슬롯 현황 -->
   <div class="slot-row" id="slot-row"></div>
 
-  <!-- 필터 + 테이블 -->
+  <!-- 테이블 -->
   <div class="table-wrap">
     <div class="table-top">
       <div class="table-top-title">
         <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         신청자 목록
       </div>
-      <div class="filter-row" id="filter-row">
-        <button class="filter-btn on" data-f="all" onclick="setFilter('all',this)">전체</button>
-        <button class="filter-btn" data-f="검토중" onclick="setFilter('검토중',this)">검토중</button>
-        <button class="filter-btn" data-f="수락" onclick="setFilter('수락',this)">수락</button>
-        <button class="filter-btn" data-f="거절" onclick="setFilter('거절',this)">거절</button>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="filter-row">
+          <button class="filter-btn on" onclick="setFilter('all',this)">전체</button>
+          <button class="filter-btn" onclick="setFilter('검토중',this)">검토중</button>
+          <button class="filter-btn" onclick="setFilter('수락',this)">수락</button>
+          <button class="filter-btn" onclick="setFilter('거절',this)">거절</button>
+          <button class="filter-btn" onclick="setFilter('미완성',this)">미완성</button>
+        </div>
+        <button class="btn-excel-sm" onclick="exportExcel()">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          엑셀
+        </button>
       </div>
     </div>
     <div class="tbl-scroll">
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>닉네임</th>
-            <th>서버</th>
-            <th>방식</th>
-            <th>티어</th>
-            <th>최고 CP</th>
-            <th>산업</th>
-            <th>편대</th>
-            <th>추천인</th>
-            <th>결정</th>
-            <th>액션</th>
-            <th>신청 시각</th>
+            <th>#</th><th>닉네임 / UID</th><th>서버</th><th>방식</th>
+            <th>자동 등급</th><th>이민 CP</th>
+            <th>APC 1편대</th><th>APC 2편대</th><th>APC 3편대</th>
+            <th>활동시간(KST)</th><th>산업</th><th>주 병종</th><th>추천인</th>
+            <th>결정</th><th>액션</th>
           </tr>
         </thead>
         <tbody id="tbl-body"></tbody>
       </table>
     </div>
   </div>
-
 </div>
 
 <script>
-const ADMIN_PW = '213nxt'; // ← 비밀번호 변경
-const TIER_SLOTS = { '일반': 60, '중급': 20, '고급': 5, '상급': 1, '모름': 0 };
+// ── 초기값 ────────────────────────────────────
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxbMJQVNhLR7k3ZcnXaa4HmOGzWDqWeI-QNFuFk87IKz4rI-t4jEgYpheIS0iHE7al7Og/exec';
+let ADMIN_PW   = localStorage.getItem('admin_pw213') || '213777';
+let TIER_SLOTS = JSON.parse(localStorage.getItem('tier_slots213') || 'null') || {일반:60,중급:20,고급:5,특급:1};
+let GRADES     = JSON.parse(localStorage.getItem('grade_ranges213') || 'null') || {일반:{min:0,max:149},중급:{min:150,max:299},고급:{min:300,max:499},특급:{min:500,max:999}};
+const TIER_LIST = ['일반','중급','고급','특급','모름'];
+const TIER_CLS  = {일반:'tier-일반',중급:'tier-중급',고급:'tier-고급',특급:'tier-특급',모름:'tier-모름'};
 let curFilter = 'all';
 
-function getDB(){ try{ return JSON.parse(localStorage.getItem('dw213')||'[]') }catch{ return [] } }
-function saveDB(d){ localStorage.setItem('dw213', JSON.stringify(d)) }
+// Sheets에서 데이터 가져오기
+async function getDB(){
+  try{
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    const data = await res.json();
+    if(data.result === 'ok') return data.data || [];
+  }catch(e){ console.error('Sheets fetch 실패:', e); }
+  return [];
+}
+function saveDB(d){ /* Sheets 직접 관리 — 로컬 저장 불필요 */ }
+function fmtN(n){ return n?Number(n).toLocaleString('ko-KR'):'0' }
 
-// 비밀번호
+// ── 비밀번호 ──────────────────────────────────
 function checkPW(){
-  if(document.getElementById('pw-inp').value === ADMIN_PW){
+  if(document.getElementById('pw-inp').value===ADMIN_PW){
     document.getElementById('pw-bg').classList.add('hide');
-    document.getElementById('main').style.display = 'block';
-    renderAll();
+    document.getElementById('main').style.display='block';
+    buildCfgUI(); renderAll();
   } else {
     document.getElementById('pw-err').classList.add('on');
-    document.getElementById('pw-inp').value = '';
+    document.getElementById('pw-inp').value='';
     document.getElementById('pw-inp').focus();
   }
 }
-document.getElementById('pw-inp').addEventListener('keydown', e => { if(e.key==='Enter') checkPW(); });
+document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPW()});
 
-function fmtN(n){ return n ? Number(n).toLocaleString('ko-KR') : '0'; }
+function changePW(){
+  const nw=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-confirm').value;
+  if(!nw){alert('새 비밀번호를 입력해주세요.');return;}
+  if(nw!==cf){alert('비밀번호가 일치하지 않습니다.');return;}
+  ADMIN_PW=nw; localStorage.setItem('admin_pw213',nw);
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-confirm').value='';
+  alert('✅ 비밀번호가 변경되었습니다!');
+}
 
-function renderAll(){
-  const db = getDB();
+// ── 설정 UI 생성 ──────────────────────────────
+function buildCfgUI(){
+  // 슬롯 설정
+  const sg=document.getElementById('slot-cfg-grid');
+  sg.innerHTML=['일반','중급','고급','특급'].map(t=>`
+    <div class="slot-cfg-item">
+      <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
+      <input type="number" class="slot-cfg-inp" id="slot-${t}" value="${TIER_SLOTS[t]||0}" min="0">
+    </div>`).join('');
+  // 등급 기준
+  const gg=document.getElementById('grade-grid');
+  gg.innerHTML=['일반','중급','고급','특급'].map(t=>`
+    <div class="grade-item">
+      <div class="grade-hdr"><span class="tier-pill ${TIER_CLS[t]}">${t}</span></div>
+      <div class="grade-range">
+        <input type="number" class="grade-inp" id="g-${t}-min" value="${GRADES[t]?.min??0}">
+        <span class="grade-unit">~</span>
+        <input type="number" class="grade-inp" id="g-${t}-max" value="${GRADES[t]?.max??999}">
+        <span class="grade-unit">만</span>
+      </div>
+    </div>`).join('');
+}
 
-  // 통계
-  const total   = db.length;
-  const accepted= db.filter(r=>r.status==='수락').length;
-  const pending = db.filter(r=>r.status==='검토중').length;
-  const rejected= db.filter(r=>r.status==='거절').length;
-  const totalSlots = Object.values(TIER_SLOTS).reduce((a,b)=>a+b,0);
-  const usedSlots  = accepted;
-  const remaining  = totalSlots - usedSlots;
+function saveSlots(){
+  ['일반','중급','고급','특급'].forEach(t=>{
+    TIER_SLOTS[t]=parseInt(document.getElementById('slot-'+t).value)||0;
+  });
+  localStorage.setItem('tier_slots213',JSON.stringify(TIER_SLOTS));
+  alert('✅ 슬롯 설정 저장됨'); renderAll();
+}
+function saveGrades(){
+  ['일반','중급','고급','특급'].forEach(t=>{
+    if(!GRADES[t]) GRADES[t]={};
+    GRADES[t].min=parseInt(document.getElementById('g-'+t+'-min').value)||0;
+    GRADES[t].max=parseInt(document.getElementById('g-'+t+'-max').value)||999;
+  });
+  localStorage.setItem('grade_ranges213',JSON.stringify(GRADES));
+  alert('✅ 등급 기준 저장됨'); renderAll();
+}
 
-  document.getElementById('stats').innerHTML = `
+// 이민 전투력 기준 자동 티어
+function autoTier(cpMigr){
+  const v=Number(cpMigr)/10000;
+  for(const t of ['일반','중급','고급','특급']){
+    if(v>=(GRADES[t]?.min??0) && v<=(GRADES[t]?.max??999)) return t;
+  }
+  return '모름';
+}
+
+// ── 렌더 ──────────────────────────────────────
+async function renderAll(){
+  document.getElementById('loading-bar').style.display='block';
+  const db=await getDB();
+  document.getElementById('loading-bar').style.display='none';
+  const total=db.length;
+  const acc=db.filter(r=>r.status==='수락').length;
+  const pend=db.filter(r=>r.status==='검토중').length;
+  const rej=db.filter(r=>r.status==='거절').length;
+  const inc=db.filter(r=>r.status==='미완성').length;
+  const totalSlots=Object.values(TIER_SLOTS).reduce((a,b)=>a+b,0);
+  const remain=totalSlots-acc;
+
+  document.getElementById('stats').innerHTML=`
     <div class="stat-card"><div class="stat-label">총 신청</div><div class="stat-value blue">${total}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">수락</div><div class="stat-value green">${accepted}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">검토중</div><div class="stat-value">${pending}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">거절</div><div class="stat-value red">${rejected}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">남은 슬롯</div><div class="stat-value gold">${remaining}</div><div class="stat-sub">/ ${totalSlots}</div></div>
+    <div class="stat-card"><div class="stat-label">수락</div><div class="stat-value green">${acc}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card"><div class="stat-label">검토중</div><div class="stat-value white">${pend}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card"><div class="stat-label">거절</div><div class="stat-value red">${rej}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card"><div class="stat-label">미완성</div><div class="stat-value" style="color:var(--text2)">${inc}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card"><div class="stat-label">남은 슬롯</div><div class="stat-value gold">${remain}</div><div class="stat-sub">/ ${totalSlots}</div></div>
   `;
 
   // 슬롯 현황
-  const tierCounts = {};
-  db.filter(r=>r.status==='수락').forEach(r=>{ tierCounts[r.tier] = (tierCounts[r.tier]||0)+1; });
-  const tiers = ['일반','중급','고급','상급'];
-  const slotRows = tiers.map(t=>{
-    const used = tierCounts[t]||0;
-    const max  = TIER_SLOTS[t];
-    const left = max - used;
-    return `<div class="slot-item">
-      <span class="tier-pill tier-${t}">${t}</span>
-      <span style="font-size:12px;color:var(--text2)">${used} / ${max}</span>
-      <span class="slot-remain">${left}</span>
-    </div>`;
-  }).join('');
+  const tierCnt={};
+  db.filter(r=>r.status==='수락').forEach(r=>{tierCnt[r.tier]=(tierCnt[r.tier]||0)+1});
+  const tierApp={};
+  db.forEach(r=>{tierApp[r.tier]=(tierApp[r.tier]||0)+1});
 
-  const tierByCat = {};
-  db.forEach(r=>{ tierByCat[r.tier] = (tierByCat[r.tier]||0)+1; });
-  const appRows = tiers.map(t=>`
-    <div class="slot-item">
-      <span class="tier-pill tier-${t}">${t}</span>
-      <span class="slot-count">${tierByCat[t]||0}명</span>
-    </div>`).join('');
-
-  document.getElementById('slot-row').innerHTML = `
+  document.getElementById('slot-row').innerHTML=`
     <div class="slot-card">
       <div class="slot-title">슬롯 현황 (수락 기준)</div>
-      ${slotRows}
+      ${['일반','중급','고급','특급'].map(t=>`
+        <div class="slot-item">
+          <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
+          <span style="font-size:11px;color:var(--text2)">${tierCnt[t]||0} / ${TIER_SLOTS[t]||0}</span>
+          <span class="slot-remain">${(TIER_SLOTS[t]||0)-(tierCnt[t]||0)}</span>
+        </div>`).join('')}
       <div class="slot-item" style="margin-top:4px">
-        <span style="font-size:12px;font-weight:600;color:var(--text)">총 남은 슬롯</span>
-        <span class="slot-remain" style="font-size:18px">${remaining}</span>
+        <span style="font-weight:600;color:var(--text);font-size:12px">총 남은 슬롯</span>
+        <span class="slot-remain" style="font-size:18px">${remain}</span>
       </div>
     </div>
     <div class="slot-card">
       <div class="slot-title">티어별 신청 현황</div>
-      ${appRows}
-      <div class="slot-item"><span class="tier-pill tier-모름">모름</span><span class="slot-count">${tierByCat['모름']||0}명</span></div>
+      ${TIER_LIST.map(t=>`
+        <div class="slot-item">
+          <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
+          <span style="font-weight:700;color:var(--text)">${tierApp[t]||0}명</span>
+        </div>`).join('')}
     </div>
   `;
-
   renderTable(db);
 }
 
-function setFilter(f, el){
-  curFilter = f;
+async function setFilter(f,el){
+  curFilter=f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  renderTable(getDB());
+  const db=await getDB();
+  renderTable(db);
 }
 
 function renderTable(db){
-  let data = curFilter === 'all' ? db : db.filter(r=>r.status===curFilter);
-  const tbody = document.getElementById('tbl-body');
-  if(!data.length){
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="12">신청자가 없습니다</td></tr>';
-    return;
-  }
-  tbody.innerHTML = data.map((r,i)=>`<tr>
-    <td style="color:var(--text3);font-size:12px">${i+1}</td>
-    <td class="name-cell">${r.name}<br><span style="font-size:10px;color:var(--text3);font-weight:400">${r.uid}</span></td>
-    <td><span class="server-pill">#${r.fromSid}</span></td>
-    <td><span class="mode-pill mode-${r.mode==='혼자'?'혼자':'연맹'}">${r.mode}</span></td>
-    <td><span class="tier-pill tier-${r.tier||'모름'}">${r.tier||'모름'}</span></td>
-    <td class="cp-cell cp-max">${fmtN(r.cpMax)}</td>
-    <td style="font-size:12px;color:var(--text2)">산업 ${r.industry}</td>
-    <td style="font-size:12px">${r.squad}</td>
-    <td style="font-size:12px;color:var(--text2)">${r.recommender}</td>
-    <td><button class="status-pill status-${r.status}" onclick="cycleStatus(${r.id})">${r.status}</button></td>
-    <td class="action-cell">
-      <button class="act-btn act-ok" onclick="setStatus(${r.id},'수락')">✓</button>
-      <button class="act-btn act-no" onclick="setStatus(${r.id},'거절')">✗</button>
-      <button class="act-btn act-reset" onclick="setStatus(${r.id},'검토중')">↺</button>
+  let data=curFilter==='all'?db:db.filter(r=>r.status===curFilter);
+  const tbody=document.getElementById('tbl-body');
+  if(!data.length){tbody.innerHTML='<tr class="empty-row"><td colspan="15">신청자가 없습니다</td></tr>';return;}
+
+  tbody.innerHTML=data.map((r,i)=>`<tr>
+    <td style="color:var(--text3);font-size:11px">${i+1}</td>
+    <td>
+      <div class="name-cell">${r.name}</div>
+      <div class="uid-cell">${r.uid||'-'}</div>
     </td>
-    <td style="font-size:11px;color:var(--text3);white-space:nowrap">${r.registeredAt}</td>
+    <td><span class="server-pill">#${r.fromSid||'-'}</span></td>
+    <td><span class="mode-pill mode-${r.mode==='혼자'?'혼자':'연맹'}">${r.mode||'-'}</span></td>
+    <td>
+      <span class="tier-pill ${TIER_CLS[autoTier(r.cpMigr)] || 'tier-모름'}">${autoTier(r.cpMigr)}</span>
+      ${r.cpMigr?'':'<span style="font-size:10px;color:var(--text3)">미입력</span>'}
+    </td>
+    <td class="cp-purple">${r.cpMigr?fmtN(r.cpMigr):'<span style="color:var(--text3)">-</span>'}</td>
+    <td class="cp-gold" style="font-size:11px">${r.apc1?fmtN(r.apc1):'-'}</td>
+    <td class="cp-gold" style="font-size:11px">${r.apc2?fmtN(r.apc2):'-'}</td>
+    <td class="cp-gold" style="font-size:11px">${r.apc3?fmtN(r.apc3):'-'}</td>
+    <td style="font-size:11px;color:var(--accent2)">${r.activeTime||'-'}</td>
+    <td style="font-size:11px;color:var(--text2)">산업 ${r.industry||'-'}</td>
+    <td style="font-size:11px">${r.squad||'-'}</td>
+    <td style="font-size:11px;color:var(--text2)">${r.recommender||'-'}</td>
+    <td>
+      <select class="tier-select" style="min-width:60px" onchange="changeStatus(${r.id},this.value)">
+        <option value="검토중" ${r.status==='검토중'?'selected':''}>검토중</option>
+        <option value="수락"   ${r.status==='수락'?'selected':''}>수락</option>
+        <option value="거절"   ${r.status==='거절'?'selected':''}>거절</option>
+        <option value="미완성" ${r.status==='미완성'?'selected':''}>미완성</option>
+      </select>
+    </td>
+    <td class="action-cell">
+      <button class="act-btn act-ok"    onclick="changeStatus(${r.id},'수락')">✓</button>
+      <button class="act-btn act-no"    onclick="changeStatus(${r.id},'거절')">✗</button>
+      <button class="act-btn act-reset" onclick="changeStatus(${r.id},'검토중')">↺</button>
+      <button class="act-btn act-del"   onclick="delEntry(${r.id})">🗑</button>
+    </td>
   </tr>`).join('');
 }
 
-function setStatus(id, status){
-  const db = getDB();
-  const idx = db.findIndex(r=>r.id===id);
-  if(idx<0) return;
-  db[idx].status = status;
-  saveDB(db);
-  renderAll();
+function changeStatus(id,status){
+  const db=getDB(),idx=db.findIndex(r=>r.id===id);
+  if(idx<0)return;
+  db[idx].status=status; saveDB(db); renderAll();
 }
-
-function cycleStatus(id){
-  const db = getDB();
-  const idx = db.findIndex(r=>r.id===id);
-  if(idx<0) return;
-  const cycle = ['검토중','수락','거절'];
-  const cur = cycle.indexOf(db[idx].status);
-  db[idx].status = cycle[(cur+1)%cycle.length];
-  saveDB(db);
-  renderAll();
+function delEntry(id){
+  if(!confirm('이 신청자를 삭제하시겠습니까?'))return;
+  saveDB(getDB().filter(r=>r.id!==id)); renderAll();
 }
-
 function clearAll(){
-  if(!confirm('정말 전체 삭제하시겠습니까?')) return;
-  saveDB([]);
-  renderAll();
+  if(!confirm('전체 삭제하시겠습니까? 복구 불가입니다.'))return;
+  saveDB([]); renderAll();
 }
 
-function exportExcel(){
-  const db = getDB();
-  if(!db.length){ alert('데이터 없음'); return; }
-
-  const wb = XLSX.utils.book_new();
-
-  // ── 시트 1: 이민자 목록 ─────────────────────
-  const rows = db.map((r,i)=>({
-    'No': i+1,
-    '닉네임': r.name,
-    'UID': r.uid,
-    '서버': '#'+r.fromSid,
-    '이동 방식': r.mode,
-    '티어': r.tier||'모름',
-    '블랙 머니': Number(r.blackMoney)||0,
-    '건축물 CP': Number(r.cpBuild)||0,
-    '과학기술 CP': Number(r.cpTech)||0,
-    '부대 CP': Number(r.cpTroop)||0,
-    '영웅 CP': Number(r.cpHero)||0,
-    '개조차 CP': Number(r.cpVehicle)||0,
-    '최고 전투력': Number(r.cpMax)||0,
-    '산업': '산업 '+r.industry,
-    '1편대': r.squad,
-    '추천인': r.recommender,
-    '결정': r.status,
-    '신청 시각': r.registeredAt
+async function exportExcel(){
+  const db=getDB();
+  if(!db.length){alert('데이터 없음');return;}
+  const rows=db.map((r,i)=>({
+    'No':i+1,'닉네임':r.name,'UID':r.uid||'','서버':'#'+(r.fromSid||''),
+    '이동방식':r.mode||'','티어':r.tier||'모름',
+    '이민전투력':Number(r.cpMigr)||0,
+    'APC1편대':Number(r.apc1)||0,
+    'APC2편대':Number(r.apc2)||0,
+    'APC3편대':Number(r.apc3)||0,
+    '활동시간(KST)':r.activeTime||'',
+    '건축물CP':Number(r.cpBuild)||0,'과학기술CP':Number(r.cpTech)||0,
+    '부대CP':Number(r.cpTroop)||0,'영웅CP':Number(r.cpHero)||0,'개조차CP':Number(r.cpVehicle)||0,
+    '최고전투력':Number(r.cpMax)||0,
+    '산업':'산업 '+(r.industry||''),'주병종':r.squad||'','추천인':r.recommender||'',
+    '결정':r.status||'','신청시각':r.registeredAt||''
   }));
-
-  const ws1 = XLSX.utils.json_to_sheet(rows);
-
-  // 열 너비
-  ws1['!cols'] = [5,14,18,7,8,7,13,11,13,9,9,10,13,8,8,12,7,17].map(w=>({wch:w}));
-
-  // 헤더 스타일 (보라색)
-  const range1 = XLSX.utils.decode_range(ws1['!ref']);
-  for(let c=range1.s.c; c<=range1.e.c; c++){
-    const addr = XLSX.utils.encode_cell({r:0,c});
-    if(!ws1[addr]) continue;
-    ws1[addr].s = {
-      font:{bold:true,color:{rgb:'FFFFFF'}},
-      fill:{fgColor:{rgb:'5B2D8E'}},
-      alignment:{horizontal:'center',vertical:'center'},
-      border:{bottom:{style:'medium',color:{rgb:'FFFFFF'}}}
-    };
-  }
-
-  // 티어별 행 색상
-  const tierColors = {'일반':'D0D8E8','중급':'C5D9F1','고급':'E6D0F0','상급':'FCE4C8','모름':'D0EFD8'};
-  for(let r=1; r<=range1.e.r; r++){
-    const tierCell = ws1[XLSX.utils.encode_cell({r,c:5})];
-    const tier = tierCell ? tierCell.v : '';
-    const bg = tierColors[tier] || 'F5F5F5';
-    for(let c=range1.s.c; c<=range1.e.c; c++){
-      const addr = XLSX.utils.encode_cell({r,c});
-      if(!ws1[addr]) ws1[addr]={v:'',t:'s'};
-      ws1[addr].s = { fill:{fgColor:{rgb:bg}}, alignment:{vertical:'center'} };
-    }
-  }
-
-  // ── 시트 2: 통계 대시보드 ──────────────────
-  const total    = db.length;
-  const accepted = db.filter(r=>r.status==='수락').length;
-  const pending  = db.filter(r=>r.status==='검토중').length;
-  const rejected = db.filter(r=>r.status==='거절').length;
-  const tierCnt  = {};
-  db.forEach(r=>{ tierCnt[r.tier||'모름'] = (tierCnt[r.tier||'모름']||0)+1; });
-  const totalSlots = Object.values(TIER_SLOTS).reduce((a,b)=>a+b,0);
-  const remaining  = totalSlots - accepted;
-
-  const statsData = [
-    ['213 이민자 관리 — 통계','','',''],
-    ['213NXT 부앙','','',''],
-    ['','','',''],
-    ['결정 현황','','슬롯 현황',''],
-    ['총 신청', total, '총 슬롯', totalSlots],
-    ['수락', accepted, '남은 슬롯', remaining],
-    ['검토중', pending, '',''],
-    ['거절', rejected, '',''],
-    ['','','',''],
-    ['티어별 신청','','슬롯 기준',''],
-    ['일반', tierCnt['일반']||0, '일반 슬롯', TIER_SLOTS['일반']],
-    ['중급', tierCnt['중급']||0, '중급 슬롯', TIER_SLOTS['중급']],
-    ['고급', tierCnt['고급']||0, '고급 슬롯', TIER_SLOTS['고급']],
-    ['상급', tierCnt['상급']||0, '상급 슬롯', TIER_SLOTS['상급']],
-    ['모름', tierCnt['모름']||0, '',''],
-  ];
-
-  const ws2 = XLSX.utils.aoa_to_sheet(statsData);
-  ws2['!cols'] = [{wch:14},{wch:10},{wch:14},{wch:10}];
-
-  // 헤더 스타일
-  ws2['A1'].s = {font:{bold:true,sz:14,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'4A1D8F'}},alignment:{horizontal:'center'}};
-  ws2['!merges'] = [{s:{r:0,c:0},e:{r:0,c:3}}];
-
-  XLSX.utils.book_append_sheet(wb, ws1, '이민자 목록');
-  XLSX.utils.book_append_sheet(wb, ws2, '통계');
-
-  XLSX.writeFile(wb, '213_이민자관리_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[4,14,18,7,8,7,12,12,10,12,9,9,10,12,7,7,12,7,17].map(w=>({wch:w}));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'213 이민자');
+  XLSX.writeFile(wb,'213_이민자_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 </script>
 </body>
