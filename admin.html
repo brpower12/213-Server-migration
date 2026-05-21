@@ -219,22 +219,65 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 }
 
 /* ── 반응형 ── */
+
+/* ── 모바일 카드 뷰 ── */
 @media(max-width:768px){
-  .stats-grid{grid-template-columns:repeat(3,1fr)}
-  .stat-card:nth-child(4),.stat-card:nth-child(5){grid-column:span 1}
-  .slot-cards{grid-template-columns:repeat(2,1fr)}
-  .cfg-cols{grid-template-columns:1fr}
+  /* 헤더 버튼 텍스트 숨김 */
   .hdr-btn span{display:none}
-  .hdr-btn{padding:8px}
-  .hdr-btn svg{width:16px;height:16px}
-  .logo{font-size:15px}
-}
-@media(max-width:480px){
+  .hdr-btn{padding:8px 10px;min-width:36px;justify-content:center}
+  .logo{font-size:14px}
+  .live-pill{font-size:9px;padding:2px 6px}
+
+  /* 테이블 숨기고 카드로 */
+  .scroll-wrap{display:none}
+  .mobile-cards{display:block}
+
+  /* 통계 2열 */
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .stat-card:last-child{grid-column:span 2}
+  .stat-num{font-size:22px}
+
+  /* 슬롯 2열 */
   .slot-cards{grid-template-columns:1fr 1fr}
-  .header{height:52px}
+
+  /* 필터 */
+  .table-head{flex-direction:column;align-items:flex-start;gap:8px}
+  .filter-pills{width:100%;justify-content:flex-start}
+  .fp{padding:6px 12px;font-size:12px}
+
+  /* 세부필터 2열 */
+  .df-selects{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .df-sel{max-width:none;min-width:0}
+  .df-reset{grid-column:span 2}
+  .df-label{display:none}
+
+  /* 설정패널 1열 */
+  .cfg-cols{grid-template-columns:1fr}
+
+  /* 분석 1열 */
+  .analytics-grid{grid-template-columns:1fr}
 }
+.mobile-cards{display:none}
+
+/* 카드 스타일 */
+.m-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:8px}
+.m-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.m-card-name{font-size:15px;font-weight:700;color:#e2e8f0}
+.m-card-grade{display:flex;align-items:center;gap:6px}
+.m-card-uid{font-size:10px;color:var(--text3);font-family:monospace;margin-top:2px;display:flex;align-items:center;gap:4px}
+.m-card-body{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.m-field{background:var(--bg3);border-radius:6px;padding:7px 10px}
+.m-field-label{font-size:9px;letter-spacing:.5px;color:var(--text3);text-transform:uppercase;margin-bottom:2px}
+.m-field-value{font-size:12px;font-weight:500;color:var(--text)}
+.m-field-value.purple{color:var(--purple2)}
+.m-field-value.gold{color:var(--gold)}
+.m-field-value.cyan{color:var(--cyan2)}
+.m-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
+.m-apc-row{display:flex;gap:6px;flex:1}
+.m-apc{background:var(--bg3);border-radius:5px;padding:4px 8px;font-size:11px;color:var(--gold);text-align:center;flex:1}
+.m-apc-lbl{font-size:9px;color:var(--text3);display:block}
+.m-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
 </style>
 </head>
 <body>
@@ -414,6 +457,8 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
         </table>
       </div>
     </div>
+    <!-- 모바일 카드 -->
+    <div class="mobile-cards" id="mobile-cards"></div>
 
   </div>
 </div>
@@ -626,10 +671,71 @@ function renderTable(){
 
   document.getElementById('tbl-count').textContent = `(${data.length}명)`;
   const tbody = document.getElementById('tbl-body');
+  const mCards = document.getElementById('mobile-cards');
   if(!data.length){
     tbody.innerHTML='<tr class="tr-empty"><td colspan="15">신청자가 없습니다</td></tr>';
+    mCards.innerHTML='<div style="text-align:center;color:var(--text3);padding:2rem;font-size:13px">신청자가 없습니다</div>';
     return;
   }
+  // 모바일 카드 렌더링
+  mCards.innerHTML = data.map((r,i)=>{
+    const g = grade(r.cpMigr);
+    const s = r.status||'검토중';
+    const cpDisp = r.cpMigr ? (isNaN(r.cpMigr)?r.cpMigr:parseFloat(r.cpMigr).toFixed(1)+'M') : '-';
+    return `<div class="m-card">
+      <div class="m-card-top">
+        <div>
+          <div class="m-card-name">${r.name||'-'}</div>
+          <div class="m-card-uid">
+            <span>${r.uid||'-'}</span>
+            ${r.uid&&r.uid!=='-'?`<button class="copy-btn" onclick="copyUID('${r.uid}')">📋</button>`:''}
+          </div>
+        </div>
+        <div class="m-card-grade">
+          <span class="tp tp-${g}">${g}</span>
+          <span class="srv-tag">#${r.fromSid||'-'}</span>
+        </div>
+      </div>
+      <div class="m-card-body">
+        <div class="m-field">
+          <div class="m-field-label">이민 CP</div>
+          <div class="m-field-value purple">${cpDisp}</div>
+        </div>
+        <div class="m-field">
+          <div class="m-field-label">방식</div>
+          <div class="m-field-value">${r.mode||'-'}</div>
+        </div>
+        <div class="m-field">
+          <div class="m-field-label">활동시간 KST</div>
+          <div class="m-field-value cyan" style="font-size:11px">${r.activeTime||'-'}</div>
+        </div>
+        <div class="m-field">
+          <div class="m-field-label">산업 / 병종</div>
+          <div class="m-field-value" style="font-size:11px">${r.industry?'산업'+r.industry:'-'} / ${r.squad||'-'}</div>
+        </div>
+        <div class="m-field" style="grid-column:span 2">
+          <div class="m-field-label">추천인</div>
+          <div class="m-field-value">${r.recommender||'-'}</div>
+        </div>
+      </div>
+      <div class="m-card-bottom">
+        <div class="m-apc-row">
+          <div class="m-apc"><span class="m-apc-lbl">1편대</span>${r.apc1||'-'}</div>
+          <div class="m-apc"><span class="m-apc-lbl">2편대</span>${r.apc2||'-'}</div>
+          <div class="m-apc"><span class="m-apc-lbl">3편대</span>${r.apc3||'-'}</div>
+        </div>
+        <div class="m-actions">
+          <select class="status-sel s-${s}" onchange="changeStatus(this,${i},this.value)" style="font-size:11px">
+            <option value="검토중" ${s==='검토중'?'selected':''}>검토중</option>
+            <option value="수락"   ${s==='수락'?'selected':''}>✓ 수락</option>
+            <option value="거절"   ${s==='거절'?'selected':''}>✗ 거절</option>
+          </select>
+          <button class="del-btn" onclick="delRow(${i},'${(r.name||'').replace(/'/g,'')}')">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
   tbody.innerHTML = data.map((r,i)=>{
     const g = grade(r.cpMigr); // 항상 로컬 기준으로 재계산
     const s = r.status||'검토중';
