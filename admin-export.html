@@ -2,490 +2,799 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>213 이민자 관리</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>213 SERVER 관리</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0b0f;--bg2:#111318;--bg3:#181c24;
-  --border:#242a38;--border2:#2e3650;
-  --text:#c8d0e0;--text2:#6a7490;--text3:#3a4260;
-  --accent:#4f8ef7;--accent2:#7aadff;
-  --green:#2eb87a;--red:#e04848;--gold:#d4a843;--gold2:#f0c040;
-  --r:8px;--r2:14px;
+  --bg:#080a0f;--bg2:#0f1118;--bg3:#161b26;--bg4:#1c2235;
+  --border:#1e2637;--border2:#2a3550;
+  --text:#c8d4e8;--text2:#5a6b8a;--text3:#2e3d55;
+  --accent:#3d8bff;--accent2:#6ba8ff;
+  --gold:#c8971f;--gold2:#f0b832;
+  --green:#1ea86a;--green2:#2dd47d;
+  --red:#d63030;--red2:#ff5555;
+  --purple:#7340cc;--purple2:#a06cff;
+  --orange:#d4650a;--orange2:#ff8c2a;
+  --cyan:#0ea5c8;--cyan2:#38c8e8;
+  --r:10px;--r2:14px;--r3:18px;
 }
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 4rem}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
-.top-left{display:flex;align-items:center;gap:12px}
-.logo{font-family:'Black Han Sans',sans-serif;font-size:22px;color:#fff}
-.logo span{color:var(--accent2)}
-.badge-live{display:inline-flex;align-items:center;gap:5px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2);font-size:11px;padding:3px 10px;border-radius:20px}
-.badge-live i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.top-right{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border-radius:var(--r);padding:9px 16px;font-size:13px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;border:none;font-weight:500}
-.btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
-.btn-green{background:rgba(46,184,122,.15);border:1px solid rgba(46,184,122,.35);color:var(--green)}
-.btn-green:hover{background:rgba(46,184,122,.25)}
-.btn-accent{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.35);color:var(--accent2)}
-.btn-accent:hover{background:rgba(79,142,247,.25)}
-.btn-red{background:rgba(224,72,72,.12);border:1px solid rgba(224,72,72,.3);color:#ff7070}
-.btn-red:hover{background:rgba(224,72,72,.22)}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
 
-/* 통계 */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1rem}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px}
-.stat-label{font-size:11px;color:var(--text2);margin-bottom:6px}
-.stat-value{font-family:'Black Han Sans',sans-serif;font-size:24px}
-.stat-value.blue{color:var(--accent2)}.stat-value.green{color:var(--green)}
-.stat-value.gold{color:var(--gold2)}.stat-value.red{color:#ff7070}
-.stat-value.white{color:#fff}
-.stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
+/* ── 비번 모달 ── */
+.pw-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0d1525 0%,#050810 100%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.pw-overlay.hide{display:none}
+.pw-card{background:linear-gradient(145deg,#0f1520,#131c2e);border:1px solid var(--border2);border-radius:var(--r3);padding:2.5rem 2rem;width:100%;max-width:340px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.6)}
+.pw-logo-wrap{margin-bottom:1.5rem}
+.pw-logo{font-family:'Black Han Sans',sans-serif;font-size:28px;color:#fff;letter-spacing:2px}
+.pw-logo span{background:linear-gradient(135deg,var(--accent2),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pw-tag{display:inline-block;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2);font-size:10px;padding:3px 10px;border-radius:20px;margin-top:6px;letter-spacing:2px}
+.pw-desc{font-size:13px;color:var(--text2);margin-bottom:1.5rem}
+.pw-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);padding:14px;font-size:18px;text-align:center;letter-spacing:6px;outline:none;transition:.2s;margin-bottom:8px}
+.pw-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(61,139,255,.12)}
+.pw-error{font-size:12px;color:var(--red2);margin-bottom:10px;min-height:18px;display:none}
+.pw-error.on{display:block}
+.pw-btn{width:100%;background:linear-gradient(135deg,var(--accent),#2060cc);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 20px rgba(61,139,255,.3)}
+.pw-btn:hover{filter:brightness(1.1)}
+.pw-btn:active{transform:scale(.98)}
 
-/* 설정 카드 */
-.cfg-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:1rem}
-.cfg-title{font-size:10px;letter-spacing:2.5px;color:var(--text2);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
-.cfg-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ── 상단 헤더 ── */
+.header{background:linear-gradient(135deg,#0c1220,#111827);border-bottom:1px solid var(--border2);padding:0 1rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.logo{font-family:'Black Han Sans',sans-serif;font-size:18px;color:#fff;letter-spacing:1px}
+.logo em{background:linear-gradient(135deg,var(--accent2),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.live-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(30,168,106,.12);border:1px solid rgba(30,168,106,.3);color:var(--green2);font-size:10px;padding:3px 8px;border-radius:10px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green2);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.hdr-actions{display:flex;gap:6px;align-items:center}
+.hdr-btn{border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap}
+.hdr-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;flex-shrink:0}
+.hdr-btn:active{transform:scale(.95)}
+.btn-refresh{background:rgba(61,139,255,.12);border:1px solid rgba(61,139,255,.25);color:var(--accent2)}
+.btn-refresh:hover{background:rgba(61,139,255,.22)}
+.btn-excel{background:rgba(30,168,106,.12);border:1px solid rgba(30,168,106,.25);color:var(--green2)}
+.btn-excel:hover{background:rgba(30,168,106,.22)}
+.btn-cfg{background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.btn-cfg:hover{border-color:var(--border2);color:var(--text)}
+.btn-cfg.active{background:rgba(61,139,255,.1);border-color:var(--accent);color:var(--accent2)}
+.btn-danger{background:rgba(214,48,48,.1);border:1px solid rgba(214,48,48,.25);color:var(--red2)}
+.btn-danger:hover{background:rgba(214,48,48,.18)}
 
-/* 슬롯 설정 */
-.slot-cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
-.slot-cfg-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:10px;justify-content:space-between}
-.slot-cfg-inp{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:14px;font-family:inherit;outline:none;width:70px;text-align:center;font-weight:700}
-.slot-cfg-inp:focus{border-color:var(--accent)}
-.cfg-save-btn{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:var(--accent2);border-radius:var(--r);padding:9px 16px;font-size:12px;font-family:inherit;cursor:pointer;transition:.15s;margin-top:10px}
-.cfg-save-btn:hover{background:rgba(79,142,247,.25)}
+/* ── 콘텐츠 ── */
+.content{max-width:1280px;margin:0 auto;padding:1rem}
 
-/* 등급 기준 */
-.grade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
-.grade-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px}
-.grade-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.grade-range{display:flex;align-items:center;gap:6px}
-.grade-inp{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 8px;font-size:13px;font-family:inherit;outline:none;width:80px;text-align:center}
-.grade-inp:focus{border-color:var(--accent)}
-.grade-unit{font-size:11px;color:var(--text3)}
+/* ── 통계 ── */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1rem}
+.stat-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.blue::before{background:linear-gradient(90deg,var(--accent),var(--cyan))}
+.stat-card.green::before{background:linear-gradient(90deg,var(--green),var(--green2))}
+.stat-card.white::before{background:linear-gradient(90deg,#4a5568,#718096)}
+.stat-card.red::before{background:linear-gradient(90deg,var(--red),var(--red2))}
+.stat-card.gold::before{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.stat-label{font-size:10px;color:var(--text2);letter-spacing:.5px;margin-bottom:6px}
+.stat-num{font-family:'Black Han Sans',sans-serif;font-size:28px;line-height:1}
+.stat-card.blue .stat-num{color:var(--accent2)}
+.stat-card.green .stat-num{color:var(--green2)}
+.stat-card.white .stat-num{color:var(--text)}
+.stat-card.red .stat-num{color:var(--red2)}
+.stat-card.gold .stat-num{color:var(--gold2)}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:3px}
 
-/* 티어 뱃지 */
-.tier-pill{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:5px;font-weight:500;white-space:nowrap}
-.tier-일반{background:rgba(130,140,155,.15);border:1px solid #7a8699;color:#aab4c4}
-.tier-중급{background:rgba(56,132,220,.12);border:1px solid #3884dc;color:#6aaaf5}
-.tier-고급{background:rgba(130,80,210,.12);border:1px solid #8250d2;color:#b080f0}
-.tier-특급{background:rgba(230,130,30,.12);border:1px solid #e6821e;color:#f0a040}
-.tier-모름{background:rgba(60,180,100,.1);border:1px solid #3cb464;color:#60d080}
+/* ── 설정 패널 ── */
+.cfg-panel{display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:1.25rem;margin-bottom:1rem;animation:slideDown .2s ease}
+.cfg-panel.on{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.cfg-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cfg-section-title{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cfg-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;margin-bottom:6px;gap:8px}
+.cfg-row:last-of-type{margin-bottom:0}
+.cfg-inp{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:5px 8px;font-size:14px;width:64px;text-align:center;outline:none;-webkit-appearance:none}
+.cfg-inp:focus{border-color:var(--accent)}
+.cfg-sep{color:var(--text3);font-size:12px}
+.cfg-unit{font-size:10px;color:var(--text3)}
+.cfg-save-btn{width:100%;background:rgba(61,139,255,.15);border:1px solid rgba(61,139,255,.3);color:var(--accent2);border-radius:var(--r);padding:9px;font-size:12px;font-weight:500;cursor:pointer;margin-top:10px;transition:.15s}
+.cfg-save-btn:hover{background:rgba(61,139,255,.25)}
+.cfg-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.pw-change-row{display:flex;gap:8px;flex-wrap:wrap}
+.pw-change-inp{flex:1;min-width:120px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:9px 12px;font-size:13px;outline:none}
+.pw-change-inp:focus{border-color:var(--accent)}
+.pw-change-save{background:rgba(61,139,255,.15);border:1px solid rgba(61,139,255,.3);color:var(--accent2);border-radius:var(--r);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.pw-change-save:hover{background:rgba(61,139,255,.25)}
 
-/* 슬롯 현황 */
-.slot-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
-.slot-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem}
-.slot-title{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.slot-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.slot-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
-.slot-item:last-child{border-bottom:none}
-.slot-remain{color:var(--gold2);font-weight:700;font-size:15px}
+/* ── 슬롯 현황 ── */
+.slot-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem;margin-bottom:1rem}
+.section-title{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.slot-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
+.slot-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.slot-remain{font-family:'Black Han Sans',sans-serif;font-size:20px}
+.slot-bar{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.slot-bar-fill{height:100%;border-radius:2px;transition:.4s}
+.slot-info{font-size:10px;color:var(--text3)}
 
-/* 비밀번호 변경 */
-.pw-change-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pw-inp-s{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:9px 12px;font-size:14px;font-family:inherit;outline:none;flex:1;min-width:130px}
-.pw-inp-s:focus{border-color:var(--accent)}
-.pw-change-btn{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:var(--accent2);border-radius:var(--r);padding:9px 16px;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap}
-.pw-change-btn:hover{background:rgba(79,142,247,.25)}
+/* 티어 배지 */
+.tp{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap}
+.tp-일반{background:rgba(100,116,139,.15);border:1px solid #64748b;color:#94a3b8}
+.tp-중급{background:rgba(37,99,235,.12);border:1px solid #2563eb;color:#60a5fa}
+.tp-고급{background:rgba(109,40,217,.12);border:1px solid #7c3aed;color:#c4b5fd}
+.tp-특급{background:rgba(234,88,12,.12);border:1px solid #ea580c;color:#fb923c}
+.tp-모름{background:rgba(22,163,74,.1);border:1px solid #16a34a;color:#4ade80}
 
-/* 테이블 */
-.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:1rem}
-.table-top{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.table-top-title{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
-.table-top-title svg{width:15px;height:15px;stroke:var(--accent2);fill:none}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap}
-.filter-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit}
-.filter-btn:hover{border-color:var(--border2);color:var(--text)}
-.filter-btn.on{background:rgba(79,142,247,.1);border-color:var(--accent);color:var(--accent2)}
-.tbl-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:1000px}
-thead th{background:var(--bg3);color:var(--text2);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-weight:500;font-size:10px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
-tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text);font-size:12px;vertical-align:middle}
+/* ── 테이블 ── */
+.table-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.table-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.table-head-left{display:flex;align-items:center;gap:8px}
+.table-head-title{font-size:13px;font-weight:600;color:var(--text)}
+.table-head-count{font-size:11px;color:var(--text3)}
+.filter-pills{display:flex;gap:5px;flex-wrap:wrap}
+.fp{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;transition:.15s}
+.fp:hover{border-color:var(--border2);color:var(--text)}
+.fp.on{background:rgba(61,139,255,.12);border-color:var(--accent);color:var(--accent2)}
+.fp:active{transform:scale(.95)}
+
+/* 로딩 */
+.loader{display:none;text-align:center;padding:3rem;color:var(--text2);font-size:13px}
+.loader.on{display:block}
+.loader-ring{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:800px;font-size:12px}
+thead th{background:var(--bg3);color:var(--text2);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:rgba(255,255,255,.02)}
-.name-cell{font-weight:700;color:#fff;font-size:13px}
-.uid-cell{font-size:10px;color:var(--text3);font-family:monospace;margin-top:2px}
-.server-pill{display:inline-block;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold);font-size:11px;padding:2px 7px;border-radius:4px}
-.mode-pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;white-space:nowrap}
-.mode-혼자{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2)}
-.mode-연맹{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold2)}
-/* 티어 드롭다운 */
-.tier-select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:3px 6px;font-size:11px;font-family:inherit;outline:none;cursor:pointer}
-.tier-select:focus{border-color:var(--accent)}
-/* 결정 */
-.status-pill{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;border:none;font-family:inherit;font-weight:500;white-space:nowrap}
-.status-검토중{background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.28);color:var(--accent2)}
-.status-수락{background:rgba(46,184,122,.12);border:1px solid rgba(46,184,122,.28);color:var(--green)}
-.status-거절{background:rgba(224,72,72,.1);border:1px solid rgba(224,72,72,.25);color:#ff7070}
-.action-cell{display:flex;gap:4px;flex-wrap:wrap}
-.act-btn{border:none;border-radius:4px;padding:4px 8px;font-size:11px;font-family:inherit;cursor:pointer;transition:.15s;white-space:nowrap}
-.act-ok{background:rgba(46,184,122,.15);color:var(--green)}.act-ok:hover{background:rgba(46,184,122,.25)}
-.act-no{background:rgba(224,72,72,.1);color:#ff7070}.act-no:hover{background:rgba(224,72,72,.2)}
-.act-reset{background:rgba(79,142,247,.1);color:var(--accent2)}.act-reset:hover{background:rgba(79,142,247,.2)}
-.act-del{background:rgba(100,100,100,.15);color:var(--text2)}.act-del:hover{background:rgba(224,72,72,.15);color:#ff7070}
-.cp-gold{color:var(--gold2);font-weight:500}
-.cp-purple{color:#b080f0;font-weight:500}
-.cp-blue{color:#6aaaf5;font-size:11px}
-.empty-row td{text-align:center;color:var(--text3);padding:2.5rem;font-size:13px}
-.btn-excel-sm{background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.28);color:var(--green);border-radius:var(--r);padding:7px 13px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
-.btn-excel-sm:hover{background:rgba(46,184,122,.2)}
-.btn-excel-sm svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.tr-empty td{text-align:center;color:var(--text3);padding:3rem;font-size:13px}
 
-/* 비밀번호 모달 */
-.pw-bg{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;padding:1rem}
-.pw-bg.hide{display:none}
-.pw-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:2rem;width:100%;max-width:300px;text-align:center}
-.pw-logo{font-family:'Black Han Sans',sans-serif;font-size:20px;color:#fff;margin-bottom:4px}
-.pw-sub{font-size:12px;color:var(--text2);margin-bottom:1.25rem}
-.pw-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:12px;font-size:16px;text-align:center;letter-spacing:5px;font-family:inherit;outline:none;transition:.2s;margin-bottom:8px}
-.pw-inp:focus{border-color:var(--accent)}
-.pw-err{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px;display:none}
-.pw-err.on{display:block}
-.pw-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer}
-.pw-btn:hover{filter:brightness(1.1)}
+/* 셀 */
+.name-strong{font-weight:700;color:#e2e8f0;font-size:13px}
+.uid-row{display:flex;align-items:center;gap:4px;margin-top:2px}
+.uid-text{font-size:10px;color:var(--text3);font-family:monospace;letter-spacing:.5px}
+.copy-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;border-radius:4px;font-size:11px;line-height:1;transition:.15s}
+.copy-btn:hover{background:rgba(61,139,255,.15);color:var(--accent2)}
+.copy-btn:active{transform:scale(.9)}
+.srv-tag{display:inline-block;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2);font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500}
+.mode-solo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2)}
+.mode-group{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2)}
+.cp-val{font-weight:600;color:var(--purple2)}
+.apc-val{color:var(--gold);font-size:11px}
+.time-val{color:var(--cyan2);font-size:11px}
+.ind-val{color:var(--text2);font-size:11px}
+
+/* 결정 드롭다운 */
+.status-sel{-webkit-appearance:none;appearance:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;outline:none;border:1px solid transparent;min-width:64px;text-align:center}
+.s-검토중{background:rgba(61,139,255,.12);border-color:rgba(61,139,255,.3);color:var(--accent2)}
+.s-수락{background:rgba(30,168,106,.12);border-color:rgba(30,168,106,.3);color:var(--green2)}
+.s-거절{background:rgba(214,48,48,.1);border-color:rgba(214,48,48,.25);color:var(--red2)}
+
+/* 삭제 버튼 */
+.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:5px 7px;border-radius:5px;font-size:14px;line-height:1;transition:.15s}
+.del-btn:hover{background:rgba(214,48,48,.12);color:var(--red2)}
+.del-btn:active{transform:scale(.9)}
+
+/* 토스트 */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:linear-gradient(135deg,#0f1829,#162138);border:1px solid var(--border2);color:var(--text);font-size:12px;padding:10px 18px;border-radius:24px;opacity:0;transition:.25s;pointer-events:none;z-index:9998;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+
+/* ── 분석 섹션 ── */
+.analytics-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem;margin-bottom:1rem}
+.analytics-toggle-btn{background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;margin-left:auto;padding:3px 8px;border-radius:4px;transition:.15s}
+.analytics-toggle-btn:hover{background:rgba(61,139,255,.1)}
+.analytics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.analytics-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.analytics-card-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.ana-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ana-row:last-child{margin-bottom:0}
+.ana-label{font-size:12px;color:var(--text2);min-width:60px;flex-shrink:0}
+.ana-bar-wrap{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.ana-bar{height:100%;border-radius:3px;transition:.4s}
+.ana-count{font-size:12px;font-weight:600;color:var(--text);min-width:28px;text-align:right;flex-shrink:0}
+.ana-pct{font-size:10px;color:var(--text3);min-width:32px;text-align:right;flex-shrink:0}
+@media(max-width:640px){.analytics-grid{grid-template-columns:1fr}}
+
+
+/* ── 상세 필터 ── */
+.detail-filters{padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.01);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.df-label{font-size:10px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.df-selects{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1}
+.df-sel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:6px 10px;font-size:12px;outline:none;cursor:pointer;flex:1;min-width:110px;max-width:160px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a6b8a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
+.df-sel:focus{border-color:var(--accent)}
+.df-sel option{background:var(--bg3)}
+.df-sel.active{border-color:var(--accent2);color:var(--accent2);background-color:rgba(61,139,255,.08)}
+.df-reset{background:rgba(214,48,48,.08);border:1px solid rgba(214,48,48,.2);color:var(--red2);border-radius:var(--r);padding:6px 12px;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.15s}
+.df-reset:hover{background:rgba(214,48,48,.15)}
+.df-reset:active{transform:scale(.95)}
+/* 필터 활성화 강조 */
+.filter-active-bar{display:none;padding:6px 16px;background:rgba(61,139,255,.06);border-bottom:1px solid rgba(61,139,255,.15);font-size:11px;color:var(--accent2);align-items:center;gap:6px}
+.filter-active-bar.on{display:flex}
+@media(max-width:640px){
+  .df-sel{min-width:calc(50% - 4px);max-width:none}
+  .detail-filters{gap:8px}
+}
+
+/* ── 반응형 ── */
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+  .stat-card:nth-child(4),.stat-card:nth-child(5){grid-column:span 1}
+  .slot-cards{grid-template-columns:repeat(2,1fr)}
+  .cfg-cols{grid-template-columns:1fr}
+  .hdr-btn span{display:none}
+  .hdr-btn{padding:8px}
+  .hdr-btn svg{width:16px;height:16px}
+  .logo{font-size:15px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-card:last-child{grid-column:span 2}
+  .slot-cards{grid-template-columns:1fr 1fr}
+  .header{height:52px}
+}
 </style>
 </head>
 <body>
 
-<div class="pw-bg" id="pw-bg">
-  <div class="pw-box">
-    <div class="pw-logo">213 <span style="color:var(--accent2)">SERVER</span></div>
-    <div class="pw-sub">운영진 전용 관리 패널</div>
-    <input type="password" class="pw-inp" id="pw-inp" placeholder="••••••" maxlength="20">
-    <div class="pw-err" id="pw-err">비밀번호가 틀렸습니다</div>
-    <button class="pw-btn" onclick="checkPW()">입장</button>
+<!-- 비번 -->
+<div class="pw-overlay" id="pw-overlay">
+  <div class="pw-card">
+    <div class="pw-logo-wrap">
+      <div class="pw-logo">213 <span>SERVER</span></div>
+      <div class="pw-tag">ADMIN ONLY</div>
+    </div>
+    <div class="pw-desc">운영진 전용 관리 패널</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="••••••" maxlength="20">
+    <div class="pw-error" id="pw-error">비밀번호가 틀렸습니다</div>
+    <button class="pw-btn" onclick="checkPW()">입장하기</button>
   </div>
 </div>
 
-<div id="main" style="display:none">
-  <div id="loading-bar" style="display:none;text-align:center;padding:2rem;color:var(--text2);font-size:13px">
-    <div style="width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 12px"></div>
-    Google Sheets에서 데이터 불러오는 중...
-  </div>
-  <div class="top">
-    <div class="top-left">
-      <div class="logo">213 <span>SERVER</span> 이민자 관리</div>
-      <div class="badge-live"><i></i> LIVE</div>
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<!-- 메인 -->
+<div id="app" style="display:none">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="hdr-left">
+      <div class="logo">213 <em>SERVER</em> 관리</div>
+      <div class="live-pill"><span class="live-dot"></span>LIVE</div>
     </div>
-    <div class="top-right">
-      <button class="btn btn-accent" onclick="renderAll()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>새로고침
+    <div class="hdr-actions">
+      <button class="hdr-btn btn-refresh" onclick="loadData()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        <span>새로고침</span>
       </button>
-      <button class="btn btn-green" onclick="exportExcel()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>엑셀 내보내기
+      <button class="hdr-btn btn-excel" onclick="exportExcel()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>엑셀</span>
       </button>
-      <button class="btn btn-red" onclick="clearAll()">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>전체 삭제
+      <button class="hdr-btn btn-cfg" id="cfg-btn" onclick="toggleCfg()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>설정</span>
       </button>
-    </div>
-  </div>
-
-  <!-- 통계 -->
-  <div class="stats" id="stats"></div>
-
-  <!-- 슬롯 수 설정 -->
-  <div class="cfg-card">
-    <div class="cfg-title">슬롯 수 설정</div>
-    <div class="slot-cfg-grid" id="slot-cfg-grid"></div>
-    <button class="cfg-save-btn" onclick="saveSlots()">💾 슬롯 설정 저장</button>
-  </div>
-
-  <!-- 등급 기준 설정 -->
-  <div class="cfg-card">
-    <div class="cfg-title">등급 기준 설정 (이민 전투력 만 단위)</div>
-    <div class="grade-grid" id="grade-grid"></div>
-    <button class="cfg-save-btn" onclick="saveGrades()">💾 등급 기준 저장</button>
-  </div>
-
-  <!-- 비밀번호 변경 -->
-  <div class="cfg-card">
-    <div class="cfg-title">관리자 비밀번호 변경</div>
-    <div class="pw-change-row">
-      <input type="password" class="pw-inp-s" id="pw-new" placeholder="새 비밀번호" maxlength="20">
-      <input type="password" class="pw-inp-s" id="pw-confirm" placeholder="비밀번호 확인" maxlength="20">
-      <button class="pw-change-btn" onclick="changePW()">변경하기</button>
+      <button class="hdr-btn btn-danger" onclick="clearAll()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        <span>전체삭제</span>
+      </button>
     </div>
   </div>
 
-  <!-- 슬롯 현황 -->
-  <div class="slot-row" id="slot-row"></div>
+  <div class="content">
 
-  <!-- 테이블 -->
-  <div class="table-wrap">
-    <div class="table-top">
-      <div class="table-top-title">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        신청자 목록
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <div class="filter-row">
-          <button class="filter-btn on" onclick="setFilter('all',this)">전체</button>
-          <button class="filter-btn" onclick="setFilter('검토중',this)">검토중</button>
-          <button class="filter-btn" onclick="setFilter('수락',this)">수락</button>
-          <button class="filter-btn" onclick="setFilter('거절',this)">거절</button>
-          <button class="filter-btn" onclick="setFilter('미완성',this)">미완성</button>
+    <!-- 통계 -->
+    <div class="stats-grid" id="stats"></div>
+
+    <!-- 설정 패널 -->
+    <div class="cfg-panel" id="cfg-panel">
+      <div class="cfg-cols">
+        <div>
+          <div class="cfg-section-title">슬롯 수 설정</div>
+          <div id="slot-cfg"></div>
+          <button class="cfg-save-btn" onclick="saveSlots()">💾 슬롯 저장</button>
         </div>
-        <button class="btn-excel-sm" onclick="exportExcel()">
-          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          엑셀
-        </button>
+        <div>
+          <div class="cfg-section-title">등급 기준 (M 단위)</div>
+          <div id="grade-cfg"></div>
+          <button class="cfg-save-btn" onclick="saveGrades()">💾 등급 기준 저장</button>
+        </div>
+      </div>
+      <hr class="cfg-divider">
+      <div class="cfg-section-title">관리자 비밀번호 변경</div>
+      <div class="pw-change-row">
+        <input type="password" class="pw-change-inp" id="pw-new" placeholder="새 비밀번호" maxlength="20">
+        <input type="password" class="pw-change-inp" id="pw-confirm" placeholder="비밀번호 확인" maxlength="20">
+        <button class="pw-change-save" onclick="changePW()">변경</button>
       </div>
     </div>
-    <div class="tbl-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th><th>닉네임 / UID</th><th>서버</th><th>방식</th>
-            <th>자동 등급</th><th>이민 CP</th>
-            <th>APC 1편대</th><th>APC 2편대</th><th>APC 3편대</th>
-            <th>활동시간(KST)</th><th>산업</th><th>주 병종</th><th>추천인</th>
-            <th>결정</th><th>액션</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-body"></tbody>
-      </table>
+
+    <!-- 슬롯 현황 -->
+    <div class="slot-section">
+      <div class="section-title">슬롯 현황 (수락 기준)</div>
+      <div class="slot-cards" id="slot-cards"></div>
     </div>
+
+
+    <!-- 분석 섹션 -->
+    <div class="analytics-section" id="analytics-section">
+      <div class="section-title">
+        신청 현황 분석
+        <button class="analytics-toggle-btn" id="analytics-toggle" onclick="toggleAnalytics()">▼ 펼치기</button>
+      </div>
+      <div id="analytics-body" style="display:none">
+        <div class="analytics-grid">
+          <!-- 서버별 -->
+          <div class="analytics-card">
+            <div class="analytics-card-title">🌐 신청 서버별</div>
+            <div id="ana-server"></div>
+          </div>
+          <!-- 등급별 -->
+          <div class="analytics-card">
+            <div class="analytics-card-title">⚔️ 이민 등급별</div>
+            <div id="ana-grade"></div>
+          </div>
+          <!-- 산업별 -->
+          <div class="analytics-card">
+            <div class="analytics-card-title">🏭 산업별</div>
+            <div id="ana-industry"></div>
+          </div>
+          <!-- 병종별 -->
+          <div class="analytics-card">
+            <div class="analytics-card-title">🎯 주 병종별</div>
+            <div id="ana-squad"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="table-section">
+      <div class="table-head">
+        <div class="table-head-left">
+          <span class="table-head-title">신청자 목록</span>
+          <span class="table-head-count" id="tbl-count"></span>
+        </div>
+        <div class="filter-pills">
+          <button class="fp on" onclick="setStatusFilter('all',this)">전체</button>
+          <button class="fp" onclick="setStatusFilter('검토중',this)">검토중</button>
+          <button class="fp" onclick="setStatusFilter('수락',this)">✓ 수락</button>
+          <button class="fp" onclick="setStatusFilter('거절',this)">✗ 거절</button>
+        </div>
+      </div>
+      <!-- 상세 필터 드롭다운 -->
+      <div class="detail-filters">
+        <div class="df-label">세부 필터</div>
+        <div class="df-selects">
+          <select class="df-sel" id="f-server" onchange="applyFilters()">
+            <option value="">🌐 서버 전체</option>
+          </select>
+          <select class="df-sel" id="f-grade" onchange="applyFilters()">
+            <option value="">⚔️ 등급 전체</option>
+            <option value="일반">일반</option>
+            <option value="중급">중급</option>
+            <option value="고급">고급</option>
+            <option value="특급">특급</option>
+          </select>
+          <select class="df-sel" id="f-industry" onchange="applyFilters()">
+            <option value="">🏭 산업 전체</option>
+          </select>
+          <select class="df-sel" id="f-squad" onchange="applyFilters()">
+            <option value="">🎯 병종 전체</option>
+            <option value="파이터">파이터</option>
+            <option value="슈터">슈터</option>
+            <option value="라이더">라이더</option>
+          </select>
+          <button class="df-reset" onclick="resetFilters()">✕ 초기화</button>
+        </div>
+      </div>
+      <div class="filter-active-bar" id="filter-bar">
+        <span>🔍</span><span id="filter-bar-text"></span>
+      </div>
+      <div class="loader" id="loader">
+        <div class="loader-ring"></div>
+        데이터 불러오는 중...
+      </div>
+      <div class="scroll-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>닉네임 / UID</th><th>서버</th><th>방식</th>
+              <th>자동등급</th><th>이민 CP</th>
+              <th>1편대</th><th>2편대</th><th>3편대</th>
+              <th>활동시간(KST)</th><th>산업</th><th>병종</th><th>추천인</th>
+              <th>결정</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-// ── 초기값 ────────────────────────────────────
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxbMJQVNhLR7k3ZcnXaa4HmOGzWDqWeI-QNFuFk87IKz4rI-t4jEgYpheIS0iHE7al7Og/exec';
-let ADMIN_PW   = localStorage.getItem('admin_pw213') || '213777';
-let TIER_SLOTS = JSON.parse(localStorage.getItem('tier_slots213') || 'null') || {일반:60,중급:20,고급:5,특급:1};
-let GRADES     = JSON.parse(localStorage.getItem('grade_ranges213') || 'null') || {일반:{min:0,max:149},중급:{min:150,max:299},고급:{min:300,max:499},특급:{min:500,max:999}};
-const TIER_LIST = ['일반','중급','고급','특급','모름'];
-const TIER_CLS  = {일반:'tier-일반',중급:'tier-중급',고급:'tier-고급',특급:'tier-특급',모름:'tier-모름'};
-let curFilter = 'all';
+// ══════ 설정 ══════
+const SHEET = 'https://script.google.com/macros/s/AKfycbwIV5nKonb_IctNm4aGoo7_mU3JD_3KmhaB2Cg2vau18Foukrn5MEu522X9MA0h0mqUHA/exec';
+let PW    = localStorage.getItem('a213pw') || '213777';
+let SLOTS = JSON.parse(localStorage.getItem('a213slots')||'null') || {일반:60,중급:20,고급:5,특급:1};
+let GR    = JSON.parse(localStorage.getItem('a213gr')||'null')    || {일반:{min:0,max:149},중급:{min:150,max:299},고급:{min:300,max:499},특급:{min:500,max:999}};
+const TIERS = ['일반','중급','고급','특급'];
+const T_COLORS = {일반:'#94a3b8',중급:'#60a5fa',고급:'#c4b5fd',특급:'#fb923c'};
+let rows = [], filter = 'all', fServer='', fGrade='', fIndustry='', fSquad='';
 
-// Sheets에서 데이터 가져오기
-async function getDB(){
-  try{
-    const res = await fetch(SHEET_URL + '?t=' + Date.now());
-    const data = await res.json();
-    if(data.result === 'ok') return data.data || [];
-  }catch(e){ console.error('Sheets fetch 실패:', e); }
-  return [];
-}
-function saveDB(d){ /* Sheets 직접 관리 — 로컬 저장 불필요 */ }
-function fmtN(n){ return n?Number(n).toLocaleString('ko-KR'):'0' }
-
-// ── 비밀번호 ──────────────────────────────────
+// ══════ 비번 ══════
 function checkPW(){
-  if(document.getElementById('pw-inp').value===ADMIN_PW){
-    document.getElementById('pw-bg').classList.add('hide');
-    document.getElementById('main').style.display='block';
-    buildCfgUI(); renderAll();
+  const v = document.getElementById('pw-input').value;
+  if(v === PW){
+    document.getElementById('pw-overlay').classList.add('hide');
+    document.getElementById('app').style.display = 'block';
+    buildCfg(); loadData();
   } else {
-    document.getElementById('pw-err').classList.add('on');
-    document.getElementById('pw-inp').value='';
-    document.getElementById('pw-inp').focus();
+    document.getElementById('pw-error').classList.add('on');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
   }
 }
-document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPW()});
+document.getElementById('pw-input').addEventListener('keydown', e=>{ if(e.key==='Enter') checkPW(); });
+document.getElementById('pw-overlay').classList.remove('hide');
+setTimeout(()=>document.getElementById('pw-input').focus(), 300);
 
 function changePW(){
-  const nw=document.getElementById('pw-new').value;
-  const cf=document.getElementById('pw-confirm').value;
-  if(!nw){alert('새 비밀번호를 입력해주세요.');return;}
-  if(nw!==cf){alert('비밀번호가 일치하지 않습니다.');return;}
-  ADMIN_PW=nw; localStorage.setItem('admin_pw213',nw);
-  document.getElementById('pw-new').value='';
-  document.getElementById('pw-confirm').value='';
-  alert('✅ 비밀번호가 변경되었습니다!');
+  const nw = document.getElementById('pw-new').value;
+  const cf = document.getElementById('pw-confirm').value;
+  if(!nw){ toast('새 비밀번호를 입력해주세요'); return; }
+  if(nw!==cf){ toast('비밀번호가 일치하지 않습니다'); return; }
+  PW = nw; localStorage.setItem('a213pw', nw);
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-confirm').value = '';
+  toast('✅ 비밀번호 변경 완료');
 }
 
-// ── 설정 UI 생성 ──────────────────────────────
-function buildCfgUI(){
-  // 슬롯 설정
-  const sg=document.getElementById('slot-cfg-grid');
-  sg.innerHTML=['일반','중급','고급','특급'].map(t=>`
-    <div class="slot-cfg-item">
-      <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
-      <input type="number" class="slot-cfg-inp" id="slot-${t}" value="${TIER_SLOTS[t]||0}" min="0">
+// ══════ 설정 UI ══════
+function buildCfg(){
+  document.getElementById('slot-cfg').innerHTML = TIERS.map(t=>`
+    <div class="cfg-row">
+      <span class="tp tp-${t}">${t}</span>
+      <input type="number" class="cfg-inp" id="sl-${t}" value="${SLOTS[t]||0}" min="0">
     </div>`).join('');
-  // 등급 기준
-  const gg=document.getElementById('grade-grid');
-  gg.innerHTML=['일반','중급','고급','특급'].map(t=>`
-    <div class="grade-item">
-      <div class="grade-hdr"><span class="tier-pill ${TIER_CLS[t]}">${t}</span></div>
-      <div class="grade-range">
-        <input type="number" class="grade-inp" id="g-${t}-min" value="${GRADES[t]?.min??0}">
-        <span class="grade-unit">~</span>
-        <input type="number" class="grade-inp" id="g-${t}-max" value="${GRADES[t]?.max??999}">
-        <span class="grade-unit">만</span>
-      </div>
+
+  document.getElementById('grade-cfg').innerHTML = TIERS.map(t=>`
+    <div class="cfg-row">
+      <span class="tp tp-${t}" style="min-width:38px;justify-content:center">${t}</span>
+      <input type="number" class="cfg-inp" id="gmin-${t}" value="${GR[t]?.min??0}">
+      <span class="cfg-sep">~</span>
+      <input type="number" class="cfg-inp" id="gmax-${t}" value="${GR[t]?.max??999}">
+      <span class="cfg-unit">M</span>
     </div>`).join('');
 }
 
 function saveSlots(){
-  ['일반','중급','고급','특급'].forEach(t=>{
-    TIER_SLOTS[t]=parseInt(document.getElementById('slot-'+t).value)||0;
-  });
-  localStorage.setItem('tier_slots213',JSON.stringify(TIER_SLOTS));
-  alert('✅ 슬롯 설정 저장됨'); renderAll();
+  TIERS.forEach(t=>{ SLOTS[t]=parseInt(document.getElementById('sl-'+t).value)||0; });
+  localStorage.setItem('a213slots', JSON.stringify(SLOTS));
+  toast('✅ 슬롯 저장됨'); renderAll();
 }
 function saveGrades(){
-  ['일반','중급','고급','특급'].forEach(t=>{
-    if(!GRADES[t]) GRADES[t]={};
-    GRADES[t].min=parseInt(document.getElementById('g-'+t+'-min').value)||0;
-    GRADES[t].max=parseInt(document.getElementById('g-'+t+'-max').value)||999;
+  TIERS.forEach(t=>{
+    if(!GR[t]) GR[t]={};
+    GR[t].min=parseInt(document.getElementById('gmin-'+t).value)||0;
+    GR[t].max=parseInt(document.getElementById('gmax-'+t).value)||999;
   });
-  localStorage.setItem('grade_ranges213',JSON.stringify(GRADES));
-  alert('✅ 등급 기준 저장됨'); renderAll();
+  localStorage.setItem('a213gr', JSON.stringify(GR));
+  toast('✅ 등급 기준 저장됨'); renderAll();
+}
+function toggleCfg(){
+  const p=document.getElementById('cfg-panel');
+  const b=document.getElementById('cfg-btn');
+  p.classList.toggle('on'); b.classList.toggle('active');
 }
 
-// 이민 전투력 기준 자동 티어
-function autoTier(cpMigr){
-  const v=Number(cpMigr)/10000;
-  for(const t of ['일반','중급','고급','특급']){
-    if(v>=(GRADES[t]?.min??0) && v<=(GRADES[t]?.max??999)) return t;
+// ══════ 데이터 로드 ══════
+async function loadData(){
+  document.getElementById('loader').classList.add('on');
+  try{
+    const r = await fetch(SHEET + '?nocache=' + Date.now());
+    const j = await r.json();
+    rows = j.result==='ok' ? (j.data||[]) : [];
+  }catch(e){ rows=[]; toast('⚠ 데이터 로드 실패 — 새로고침 해주세요'); }
+  document.getElementById('loader').classList.remove('on');
+  updateDropdownOptions();
+  renderAll();
+}
+
+// ══════ 등급 계산 ══════
+function grade(cpMigr){
+  const v = parseFloat(String(cpMigr).replace('M',''))||0;
+  for(const t of TIERS){
+    if(v>=(GR[t]?.min??0) && v<=(GR[t]?.max??999)) return t;
   }
-  return '모름';
+  return '-';
 }
 
-// ── 렌더 ──────────────────────────────────────
-async function renderAll(){
-  document.getElementById('loading-bar').style.display='block';
-  const db=await getDB();
-  document.getElementById('loading-bar').style.display='none';
-  const total=db.length;
-  const acc=db.filter(r=>r.status==='수락').length;
-  const pend=db.filter(r=>r.status==='검토중').length;
-  const rej=db.filter(r=>r.status==='거절').length;
-  const inc=db.filter(r=>r.status==='미완성').length;
-  const totalSlots=Object.values(TIER_SLOTS).reduce((a,b)=>a+b,0);
-  const remain=totalSlots-acc;
+// ══════ 렌더 ══════
+function renderAll(){
+  const total    = rows.length;
+  const accepted = rows.filter(r=>r.status==='수락').length;
+  const pending  = rows.filter(r=>r.status==='검토중').length;
+  const rejected = rows.filter(r=>r.status==='거절').length;
+  const totalSlots = Object.values(SLOTS).reduce((a,b)=>a+b,0);
+  const remain   = totalSlots - accepted;
 
+  // 통계 카드
   document.getElementById('stats').innerHTML=`
-    <div class="stat-card"><div class="stat-label">총 신청</div><div class="stat-value blue">${total}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">수락</div><div class="stat-value green">${acc}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">검토중</div><div class="stat-value white">${pend}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">거절</div><div class="stat-value red">${rej}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">미완성</div><div class="stat-value" style="color:var(--text2)">${inc}</div><div class="stat-sub">명</div></div>
-    <div class="stat-card"><div class="stat-label">남은 슬롯</div><div class="stat-value gold">${remain}</div><div class="stat-sub">/ ${totalSlots}</div></div>
+    <div class="stat-card blue"><div class="stat-label">총 신청</div><div class="stat-num">${total}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card green"><div class="stat-label">수락</div><div class="stat-num">${accepted}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card white"><div class="stat-label">검토중</div><div class="stat-num">${pending}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card red"><div class="stat-label">거절</div><div class="stat-num">${rejected}</div><div class="stat-sub">명</div></div>
+    <div class="stat-card gold"><div class="stat-label">남은 슬롯</div><div class="stat-num">${remain}</div><div class="stat-sub">/ ${totalSlots}</div></div>
   `;
 
   // 슬롯 현황
-  const tierCnt={};
-  db.filter(r=>r.status==='수락').forEach(r=>{tierCnt[r.tier]=(tierCnt[r.tier]||0)+1});
-  const tierApp={};
-  db.forEach(r=>{tierApp[r.tier]=(tierApp[r.tier]||0)+1});
-
-  document.getElementById('slot-row').innerHTML=`
-    <div class="slot-card">
-      <div class="slot-title">슬롯 현황 (수락 기준)</div>
-      ${['일반','중급','고급','특급'].map(t=>`
-        <div class="slot-item">
-          <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
-          <span style="font-size:11px;color:var(--text2)">${tierCnt[t]||0} / ${TIER_SLOTS[t]||0}</span>
-          <span class="slot-remain">${(TIER_SLOTS[t]||0)-(tierCnt[t]||0)}</span>
-        </div>`).join('')}
-      <div class="slot-item" style="margin-top:4px">
-        <span style="font-weight:600;color:var(--text);font-size:12px">총 남은 슬롯</span>
-        <span class="slot-remain" style="font-size:18px">${remain}</span>
+  const used={};
+  rows.filter(r=>r.status==='수락').forEach(r=>{
+    const g=r.autoGrade||grade(r.cpMigr);
+    used[g]=(used[g]||0)+1;
+  });
+  document.getElementById('slot-cards').innerHTML = TIERS.map(t=>{
+    const u=used[t]||0, m=SLOTS[t]||0, pct=m?Math.min(100,u/m*100):0, left=m-u;
+    return `<div class="slot-card">
+      <div class="slot-card-top">
+        <span class="tp tp-${t}">${t}</span>
+        <span class="slot-remain" style="color:${T_COLORS[t]}">${left}</span>
       </div>
-    </div>
-    <div class="slot-card">
-      <div class="slot-title">티어별 신청 현황</div>
-      ${TIER_LIST.map(t=>`
-        <div class="slot-item">
-          <span class="tier-pill ${TIER_CLS[t]}">${t}</span>
-          <span style="font-weight:700;color:var(--text)">${tierApp[t]||0}명</span>
-        </div>`).join('')}
-    </div>
-  `;
-  renderTable(db);
+      <div class="slot-bar"><div class="slot-bar-fill" style="width:${pct}%;background:${T_COLORS[t]}"></div></div>
+      <div class="slot-info">${u} / ${m} 사용</div>
+    </div>`;
+  }).join('');
+
+  renderTable();
+  // 분석 패널 열려있으면 업데이트
+  if(document.getElementById('analytics-body').style.display!=='none') renderAnalytics();
 }
 
-async function setFilter(f,el){
-  curFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  const db=await getDB();
-  renderTable(db);
+function setStatusFilter(f,el){
+  filter=f;
+  document.querySelectorAll('.fp').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); renderTable();
 }
 
-function renderTable(db){
-  let data=curFilter==='all'?db:db.filter(r=>r.status===curFilter);
-  const tbody=document.getElementById('tbl-body');
-  if(!data.length){tbody.innerHTML='<tr class="empty-row"><td colspan="15">신청자가 없습니다</td></tr>';return;}
-
-  tbody.innerHTML=data.map((r,i)=>`<tr>
-    <td style="color:var(--text3);font-size:11px">${i+1}</td>
-    <td>
-      <div class="name-cell">${r.name}</div>
-      <div class="uid-cell">${r.uid||'-'}</div>
-    </td>
-    <td><span class="server-pill">#${r.fromSid||'-'}</span></td>
-    <td><span class="mode-pill mode-${r.mode==='혼자'?'혼자':'연맹'}">${r.mode||'-'}</span></td>
-    <td>
-      <span class="tier-pill ${TIER_CLS[autoTier(r.cpMigr)] || 'tier-모름'}">${autoTier(r.cpMigr)}</span>
-      ${r.cpMigr?'':'<span style="font-size:10px;color:var(--text3)">미입력</span>'}
-    </td>
-    <td class="cp-purple">${r.cpMigr?fmtN(r.cpMigr):'<span style="color:var(--text3)">-</span>'}</td>
-    <td class="cp-gold" style="font-size:11px">${r.apc1?fmtN(r.apc1):'-'}</td>
-    <td class="cp-gold" style="font-size:11px">${r.apc2?fmtN(r.apc2):'-'}</td>
-    <td class="cp-gold" style="font-size:11px">${r.apc3?fmtN(r.apc3):'-'}</td>
-    <td style="font-size:11px;color:var(--accent2)">${r.activeTime||'-'}</td>
-    <td style="font-size:11px;color:var(--text2)">산업 ${r.industry||'-'}</td>
-    <td style="font-size:11px">${r.squad||'-'}</td>
-    <td style="font-size:11px;color:var(--text2)">${r.recommender||'-'}</td>
-    <td>
-      <select class="tier-select" style="min-width:60px" onchange="changeStatus(${r.id},this.value)">
-        <option value="검토중" ${r.status==='검토중'?'selected':''}>검토중</option>
-        <option value="수락"   ${r.status==='수락'?'selected':''}>수락</option>
-        <option value="거절"   ${r.status==='거절'?'selected':''}>거절</option>
-        <option value="미완성" ${r.status==='미완성'?'selected':''}>미완성</option>
-      </select>
-    </td>
-    <td class="action-cell">
-      <button class="act-btn act-ok"    onclick="changeStatus(${r.id},'수락')">✓</button>
-      <button class="act-btn act-no"    onclick="changeStatus(${r.id},'거절')">✗</button>
-      <button class="act-btn act-reset" onclick="changeStatus(${r.id},'검토중')">↺</button>
-      <button class="act-btn act-del"   onclick="delEntry(${r.id})">🗑</button>
-    </td>
-  </tr>`).join('');
+function applyFilters(){
+  fServer   = document.getElementById('f-server').value;
+  fGrade    = document.getElementById('f-grade').value;
+  fIndustry = document.getElementById('f-industry').value;
+  fSquad    = document.getElementById('f-squad').value;
+  // 드롭다운 활성화 스타일
+  ['f-server','f-grade','f-industry','f-squad'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.className=el.value?'df-sel active':'df-sel';
+  });
+  renderTable();
 }
 
-function changeStatus(id,status){
-  const db=getDB(),idx=db.findIndex(r=>r.id===id);
-  if(idx<0)return;
-  db[idx].status=status; saveDB(db); renderAll();
+function resetFilters(){
+  fServer=fGrade=fIndustry=fSquad='';
+  ['f-server','f-grade','f-industry','f-squad'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.value=''; el.className='df-sel';
+  });
+  renderTable();
 }
-function delEntry(id){
-  if(!confirm('이 신청자를 삭제하시겠습니까?'))return;
-  saveDB(getDB().filter(r=>r.id!==id)); renderAll();
+
+function updateDropdownOptions(){
+  const servers   = [...new Set(rows.map(r=>r.fromSid).filter(Boolean))].sort((a,b)=>Number(a)-Number(b));
+  const industries= [...new Set(rows.map(r=>r.industry).filter(Boolean))].sort((a,b)=>Number(a)-Number(b));
+
+  const sSel = document.getElementById('f-server');
+  const cur  = sSel.value;
+  sSel.innerHTML = '<option value="">🌐 서버 전체</option>' +
+    servers.map(s=>`<option value="${s}" ${cur===s?'selected':''}>#${s}</option>`).join('');
+
+  const iSel = document.getElementById('f-industry');
+  const curI = iSel.value;
+  iSel.innerHTML = '<option value="">🏭 산업 전체</option>' +
+    industries.map(i=>`<option value="${i}" ${curI===i?'selected':''}>산업 ${i}</option>`).join('');
 }
+
+function renderTable(){
+  let data = filter==='all' ? rows : rows.filter(r=>r.status===filter);
+  if(fServer)   data = data.filter(r=>r.fromSid===fServer);
+  if(fGrade)    data = data.filter(r=>(r.autoGrade||grade(r.cpMigr))===fGrade);
+  if(fIndustry) data = data.filter(r=>r.industry===fIndustry);
+  if(fSquad)    data = data.filter(r=>r.squad===fSquad);
+
+  // 필터 활성화 바
+  const activeFilters = [];
+  if(fServer)   activeFilters.push(`서버 #${fServer}`);
+  if(fGrade)    activeFilters.push(`등급: ${fGrade}`);
+  if(fIndustry) activeFilters.push(`산업 ${fIndustry}`);
+  if(fSquad)    activeFilters.push(`병종: ${fSquad}`);
+  const bar = document.getElementById('filter-bar');
+  if(activeFilters.length){
+    bar.classList.add('on');
+    document.getElementById('filter-bar-text').textContent = activeFilters.join(' · ') + ` — ${data.length}명 해당`;
+  } else { bar.classList.remove('on'); }
+
+  document.getElementById('tbl-count').textContent = `(${data.length}명)`;
+  const tbody = document.getElementById('tbl-body');
+  if(!data.length){
+    tbody.innerHTML='<tr class="tr-empty"><td colspan="15">신청자가 없습니다</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map((r,i)=>{
+    const g = r.autoGrade || grade(r.cpMigr);
+    const s = r.status||'검토중';
+    const cpDisp = r.cpMigr ? (isNaN(r.cpMigr)?r.cpMigr:parseFloat(r.cpMigr).toFixed(1)+'M') : '-';
+    return `<tr>
+      <td style="color:var(--text3);font-size:11px">${i+1}</td>
+      <td>
+        <div class="name-strong">${r.name||'-'}</div>
+        <div class="uid-row">
+          <span class="uid-text">${r.uid||'-'}</span>
+          ${r.uid&&r.uid!=='-'?`<button class="copy-btn" onclick="copyUID('${r.uid}')" title="UID 복사">📋</button>`:''}
+        </div>
+      </td>
+      <td><span class="srv-tag">#${r.fromSid||'-'}</span></td>
+      <td><span class="${r.mode==='혼자'?'mode-solo':'mode-group'}">${r.mode||'-'}</span></td>
+      <td><span class="tp tp-${g}">${g}</span></td>
+      <td class="cp-val">${cpDisp}</td>
+      <td class="apc-val">${r.apc1||'-'}</td>
+      <td class="apc-val">${r.apc2||'-'}</td>
+      <td class="apc-val">${r.apc3||'-'}</td>
+      <td class="time-val">${r.activeTime||'-'}</td>
+      <td class="ind-val">${r.industry?'산업 '+r.industry:'-'}</td>
+      <td style="font-size:11px">${r.squad||'-'}</td>
+      <td style="font-size:11px;color:var(--text2);max-width:70px;overflow:hidden;text-overflow:ellipsis" title="${r.recommender||''}">${r.recommender||'-'}</td>
+      <td>
+        <select class="status-sel s-${s}" onchange="changeStatus(this,${i},this.value)">
+          <option value="검토중" ${s==='검토중'?'selected':''}>검토중</option>
+          <option value="수락"   ${s==='수락'?'selected':''}>✓ 수락</option>
+          <option value="거절"   ${s==='거절'?'selected':''}>✗ 거절</option>
+        </select>
+      </td>
+      <td><button class="del-btn" onclick="delRow(${i},'${(r.name||'').replace(/'/g,'')}')" title="삭제">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════ 액션 ══════
+function copyUID(uid){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(uid).then(()=>toast('📋 UID 복사됨: '+uid)).catch(()=>fallbackCopy(uid));
+  } else { fallbackCopy(uid); }
+}
+function fallbackCopy(uid){
+  const el=document.createElement('input');
+  el.value=uid; document.body.appendChild(el);
+  el.select(); document.execCommand('copy');
+  document.body.removeChild(el);
+  toast('📋 UID 복사됨: '+uid);
+}
+
+function changeStatus(sel, idx, status){
+  sel.className='status-sel s-'+status;
+  const data = filter==='all' ? rows : rows.filter(r=>r.status===filter);
+  const original = rows.indexOf(data[idx]);
+  if(original>=0){ rows[original].status=status; }
+  renderAll(); toast('상태 변경 → '+status);
+}
+
+function delRow(idx, name){
+  const data = filter==='all' ? rows : rows.filter(r=>r.status===filter);
+  if(!confirm(`"${name}" 삭제하시겠습니까?\n(Google Sheets에서도 직접 삭제해주세요)`))return;
+  const original = rows.indexOf(data[idx]);
+  if(original>=0){ rows.splice(original,1); }
+  renderAll(); toast('🗑 삭제됨: '+name);
+}
+
 function clearAll(){
-  if(!confirm('전체 삭제하시겠습니까? 복구 불가입니다.'))return;
-  saveDB([]); renderAll();
+  if(!confirm('전체 삭제하시겠습니까?\n(Google Sheets에서도 직접 삭제해주세요)'))return;
+  rows=[]; renderAll(); toast('🗑 전체 삭제됨');
 }
 
-async function exportExcel(){
-  const db=getDB();
-  if(!db.length){alert('데이터 없음');return;}
-  const rows=db.map((r,i)=>({
-    'No':i+1,'닉네임':r.name,'UID':r.uid||'','서버':'#'+(r.fromSid||''),
-    '이동방식':r.mode||'','티어':r.tier||'모름',
-    '이민전투력':Number(r.cpMigr)||0,
-    'APC1편대':Number(r.apc1)||0,
-    'APC2편대':Number(r.apc2)||0,
-    'APC3편대':Number(r.apc3)||0,
-    '활동시간(KST)':r.activeTime||'',
-    '건축물CP':Number(r.cpBuild)||0,'과학기술CP':Number(r.cpTech)||0,
-    '부대CP':Number(r.cpTroop)||0,'영웅CP':Number(r.cpHero)||0,'개조차CP':Number(r.cpVehicle)||0,
-    '최고전투력':Number(r.cpMax)||0,
-    '산업':'산업 '+(r.industry||''),'주병종':r.squad||'','추천인':r.recommender||'',
-    '결정':r.status||'','신청시각':r.registeredAt||''
+// ══════ 엑셀 ══════
+function exportExcel(){
+  if(!rows.length){ toast('데이터 없음'); return; }
+  const data = rows.map((r,i)=>({
+    'No': i+1,
+    '닉네임': r.name||'',
+    'UID': r.uid||'',
+    '서버': '#'+(r.fromSid||''),
+    '방식': r.mode||'',
+    '자동등급': r.autoGrade||grade(r.cpMigr),
+    '이민CP(M)': r.cpMigr ? (isNaN(r.cpMigr)?r.cpMigr:parseFloat(r.cpMigr).toFixed(1)+'M') : '-',
+    '1편대': r.apc1||'-',
+    '2편대': r.apc2||'-',
+    '3편대': r.apc3||'-',
+    '활동시간(KST)': r.activeTime||'',
+    '산업': r.industry?'산업 '+r.industry:'',
+    '주병종': r.squad||'',
+    '추천인': r.recommender||'',
+    '결정': r.status||'',
+    '신청시각': r.registeredAt||''
   }));
-  const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[4,14,18,7,8,7,12,12,10,12,9,9,10,12,7,7,12,7,17].map(w=>({wch:w}));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'213 이민자');
-  XLSX.writeFile(wb,'213_이민자_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws['!cols'] = [4,14,18,7,7,8,10,10,10,10,14,8,8,12,7,17].map(w=>({wch:w}));
+  // 헤더 스타일
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for(let c=range.s.c; c<=range.e.c; c++){
+    const addr = XLSX.utils.encode_cell({r:0,c});
+    if(!ws[addr]) continue;
+    ws[addr].s = {font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'1a237e'}},alignment:{horizontal:'center'}};
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '213 이민자');
+  XLSX.writeFile(wb, '213_이민자_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  toast('✅ 엑셀 다운로드 완료');
+}
+
+
+// ══════ 분석 ══════
+function toggleAnalytics(){
+  const body = document.getElementById('analytics-body');
+  const btn  = document.getElementById('analytics-toggle');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '▼ 펼치기' : '▲ 접기';
+  if(!isOpen) renderAnalytics();
+}
+
+function renderAnalytics(){
+  const total = rows.length;
+  if(!total){ 
+    ['ana-server','ana-grade','ana-industry','ana-squad'].forEach(id=>{
+      document.getElementById(id).innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:10px">데이터 없음</div>';
+    });
+    return;
+  }
+
+  // 서버별
+  const servers = {};
+  rows.forEach(r=>{ const s=r.fromSid||'?'; servers[s]=(servers[s]||0)+1; });
+  renderBar('ana-server', servers, total, '#60a5fa');
+
+  // 등급별
+  const grades = {};
+  rows.forEach(r=>{ const g=r.autoGrade||grade(r.cpMigr); grades[g]=(grades[g]||0)+1; });
+  const gradeColors = {일반:'#94a3b8',중급:'#60a5fa',고급:'#c4b5fd',특급:'#fb923c',모름:'#4ade80'};
+  renderBar('ana-grade', grades, total, null, gradeColors);
+
+  // 산업별
+  const industries = {};
+  rows.forEach(r=>{ const ind=r.industry?'산업 '+r.industry:'미입력'; industries[ind]=(industries[ind]||0)+1; });
+  renderBar('ana-industry', industries, total, '#f0b832');
+
+  // 병종별
+  const squads = {};
+  rows.forEach(r=>{ const sq=r.squad||'미입력'; squads[sq]=(squads[sq]||0)+1; });
+  const sqColors = {파이터:'#f87171',슈터:'#60a5fa',라이더:'#34d399',미입력:'#4b5563'};
+  renderBar('ana-squad', squads, total, null, sqColors);
+}
+
+function renderBar(elId, data, total, defaultColor, colorMap){
+  const el = document.getElementById(elId);
+  const sorted = Object.entries(data).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = sorted.map(([label, count])=>{
+    const pct = Math.round(count/total*100);
+    const color = (colorMap&&colorMap[label]) || defaultColor || '#60a5fa';
+    return `<div class="ana-row">
+      <span class="ana-label">${label}</span>
+      <div class="ana-bar-wrap"><div class="ana-bar" style="width:${pct}%;background:${color}"></div></div>
+      <span class="ana-count">${count}명</span>
+      <span class="ana-pct">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════ 토스트 ══════
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'), 2800);
 }
 </script>
 </body>
