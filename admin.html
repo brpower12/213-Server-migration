@@ -166,7 +166,7 @@ html,body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-hi
 .scroll-wrap::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:3px}
 table{width:100%;border-collapse:collapse;min-width:900px;font-size:12px}
 thead th{background:var(--bg3);color:var(--text2);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
-tbody td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text);white-space:nowrap}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:rgba(255,255,255,.02)}
 .tr-empty td{text-align:center;color:var(--text3);padding:3rem;font-size:13px}
@@ -177,8 +177,8 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .copy-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 3px;border-radius:3px;font-size:11px;line-height:1;transition:.15s}
 .copy-btn:hover{background:rgba(61,139,255,.15);color:var(--accent2)}
 .srv-tag{display:inline-block;background:rgba(200,151,31,.12);border:1px solid rgba(200,151,31,.35);color:var(--gold2);font-size:11px;padding:3px 8px;border-radius:5px;font-weight:700}
-.mode-solo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2)}
-.mode-group{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2)}
+.mode-solo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2);white-space:nowrap}
+.mode-group{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2);white-space:nowrap}
 .cp-val{font-weight:600;color:var(--purple2)}
 .kill-val{font-weight:600;color:#ff7070;font-size:11px;text-align:center}
 .bm-val{color:var(--gold2);font-size:11px;text-align:center}
@@ -368,7 +368,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script>
-var SHEET = 'https://script.google.com/macros/s/AKfycbzhzy9i9ZMBVnxYtXgBYrXNbPDh4ijLtfng1_lK3jpVwSe6fFF84SUt1LkAwG8fipv5ZQ/exec';
+var SHEET = 'https://script.google.com/macros/s/AKfycbyyfw8_gI0r3hzvzYD9r3PthhupHvicem8wZvD7j37cWzjl9kuq1qm9PbekAG_Vkseunw/exec';
 var PW = localStorage.getItem('a213pw') || '213777';
 var SLOTS = JSON.parse(localStorage.getItem('a213slots') || 'null') || {일반:60,중급:20,고급:5,특급:1};
 var GR = JSON.parse(localStorage.getItem('a213gr') || 'null') || {일반:{min:0,max:89},중급:{min:90,max:139},고급:{min:140,max:169},특급:{min:170,max:400}};
@@ -739,9 +739,11 @@ function changeStatus(sel, idx, status) {
  if (orig >= 0) {
   var uid = rows[orig].uid;
   rows[orig].status = status;
-  fetch(SHEET, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'updateStatus',uid:uid,status:status})})
+  // GET 방식으로 Sheets 업데이트 (CORS 우회)
+  var url = SHEET + '?action=updateStatus&uid=' + encodeURIComponent(uid) + '&status=' + encodeURIComponent(status) + '&t=' + Date.now();
+  fetch(url)
     .then(function(r){return r.json();})
-    .then(function(j){toast(j.result==='ok'?'✅ '+status+' Sheets 반영':'⚠ Sheets 반영 실패');})
+    .then(function(j){toast(j.result==='ok'?'✅ '+status+' — Sheets 반영 완료':'⚠ Sheets 반영 실패');})
     .catch(function(){toast('⚠ 네트워크 오류');});
  }
  renderAll();
