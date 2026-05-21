@@ -173,9 +173,9 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .s-거절{background:rgba(214,48,48,.1);border-color:rgba(214,48,48,.25);color:var(--red2)}
 
 /* 삭제 버튼 */
-.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:5px 7px;border-radius:5px;font-size:14px;line-height:1;transition:.15s}
-.del-btn:hover{background:rgba(214,48,48,.12);color:var(--red2)}
-.del-btn:active{transform:scale(.9)}
+.del-btn{background:rgba(214,48,48,.08);border:1px solid rgba(214,48,48,.2);color:var(--red2);cursor:pointer;padding:6px 10px;border-radius:6px;font-size:15px;line-height:1;transition:.15s;display:flex;align-items:center;justify-content:center}
+.del-btn:hover{background:rgba(214,48,48,.22);border-color:rgba(214,48,48,.5);transform:scale(1.05)}
+.del-btn:active{transform:scale(.95)}
 
 /* 토스트 */
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:linear-gradient(135deg,#0f1829,#162138);border:1px solid var(--border2);color:var(--text);font-size:12px;padding:10px 18px;border-radius:24px;opacity:0;transition:.25s;pointer-events:none;z-index:9998;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.4)}
@@ -537,7 +537,7 @@ function renderAll(){
   // 슬롯 현황
   const used={};
   rows.filter(r=>r.status==='수락').forEach(r=>{
-    const g=r.autoGrade||grade(r.cpMigr);
+    const g=grade(r.cpMigr);
     used[g]=(used[g]||0)+1;
   });
   document.getElementById('slot-cards').innerHTML = TIERS.map(t=>{
@@ -626,7 +626,7 @@ function renderTable(){
     return;
   }
   tbody.innerHTML = data.map((r,i)=>{
-    const g = r.autoGrade || grade(r.cpMigr);
+    const g = grade(r.cpMigr); // 항상 로컬 기준으로 재계산
     const s = r.status||'검토중';
     const cpDisp = r.cpMigr ? (isNaN(r.cpMigr)?r.cpMigr:parseFloat(r.cpMigr).toFixed(1)+'M') : '-';
     return `<tr>
@@ -759,7 +759,7 @@ function renderAnalytics(){
 
   // 등급별
   const grades = {};
-  rows.forEach(r=>{ const g=r.autoGrade||grade(r.cpMigr); grades[g]=(grades[g]||0)+1; });
+  rows.forEach(r=>{ const g=grade(r.cpMigr); grades[g]=(grades[g]||0)+1; });
   const gradeColors = {일반:'#94a3b8',중급:'#60a5fa',고급:'#c4b5fd',특급:'#fb923c',모름:'#4ade80'};
   renderBar('ana-grade', grades, total, null, gradeColors);
 
