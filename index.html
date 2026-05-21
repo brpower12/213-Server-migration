@@ -344,16 +344,43 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- 08 추천인 -->
-    <div class="card">
-      <div class="sec-label"><span class="sec-num">08</span> <span id="t-sec8"></span></div>
+
+      <!-- 08 킬수 -->
+      <div class="card">
+        <div class="sec-label"><span class="sec-num">08</span> <span id="t-sec8"></span></div>
+        <div class="migr-box" style="border-color:rgba(214,48,48,.3);background:rgba(214,48,48,.04)">
+          <div class="migr-lbl" style="color:#ff7070">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:#ff7070;fill:none;width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span id="t-kill-lbl"></span>
+          </div>
+          <input type="text" id="inp-kill" inputmode="numeric" oninput="fmtCP(this)" placeholder="예: 24,709,428">
+          <div class="migr-tip" id="t-kill-tip"></div>
+        </div>
+      </div>
+
+      <!-- 09 블랙머니 -->
+      <div class="card">
+        <div class="sec-label"><span class="sec-num">09</span> <span id="t-sec9-bm"></span></div>
+        <div class="migr-box" style="border-color:rgba(212,168,67,.3);background:rgba(212,168,67,.04)">
+          <div class="migr-lbl" style="color:var(--gold2)">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:var(--gold2);fill:none;width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span id="t-bm-lbl"></span>
+          </div>
+          <input type="text" id="inp-bm" inputmode="numeric" oninput="fmtCP(this)" placeholder="예: 1,786,217,310">
+          <div class="migr-tip" id="t-bm-tip"></div>
+        </div>
+      </div>
+
+      <!-- 10 추천인 -->
+      <div class="card">
+        <div class="sec-label"><span class="sec-num">10</span> <span id="t-sec10-rec"></span></div>
       <div class="rec-tip" id="t-rec-tip"></div>
       <input type="text" id="recommender">
     </div>
 
     <!-- 09 스크린샷 -->
     <div class="card">
-      <div class="sec-label"><span class="sec-num">09</span> <span id="t-sec9"></span></div>
+      <div class="sec-label"><span class="sec-num">11</span> <span id="t-sec11"></span></div>
       <div class="ss-tabs">
         <button class="ss-tab on" onclick="ssTab(0,this)" id="t-ss-tab0"></button>
         <button class="ss-tab" onclick="ssTab(1,this)" id="t-ss-tab1"></button>
@@ -450,7 +477,7 @@ input[type=file]{display:none}
 
 <script>
 // ═══════════ 설정 ═══════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwIV5nKonb_IctNm4aGoo7_mU3JD_3KmhaB2Cg2vau18Foukrn5MEu522X9MA0h0mqUHA/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz_DtimyQzY2SRQvSH-YwHV0EFYp3EGqGHTjIP-6cQU3rHTLwSxVEVBlFKj_zdLHGlNhA/exec';
 const ADMIN_PW  = '213777';
 
 // ═══════════ 번역 ═══════════
@@ -482,7 +509,7 @@ const TX = {
     't-sec6':'산업 선택', IND_PX:'산업 ',
     't-sec7':'1편대 주 병종',
     't-sq1':'파이터','t-sq2':'슈터','t-sq3':'라이더',
-    't-sec8':'추천인 / 지인 닉네임',
+    't-sec8':'적 처치 (킬수)','t-kill-lbl':'적 처치 수','t-kill-tip':'게임 내 적 처치 수를 입력해주세요','t-sec9':'블랙머니 전투력','t-bm-lbl':'블랙머니 전투력','t-bm-tip':'모를 경우 입력하지 않아도 됩니다 (선택)','t-sec10-rec':'추천인 / 지인 닉네임','t-sec11':'스크린샷 인증','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'이민을 소개해준 213 서버 유저 닉네임, 또는 이민 상담을 해준 분의 닉네임을 입력해주세요.',
     'recommender':'213 서버 유저 닉네임',
     't-sec9':'스크린샷 인증',
@@ -552,7 +579,7 @@ const TX = {
     't-sec6':'Industry', IND_PX:'Industry ',
     't-sec7':'Main Squad Type',
     't-sq1':'Fighter','t-sq2':'Shooter','t-sq3':'Rider',
-    't-sec8':'Referrer Nickname',
+    't-sec8':'Enemy Kills','t-kill-lbl':'Kill Points','t-kill-tip':'Enter your kill points shown in-game','t-sec9':'Black Money Power','t-bm-lbl':'Black Money Power','t-bm-tip':'Optional — leave blank if unknown','t-sec10-rec':'Referrer Nickname','t-sec11':'Screenshot Verification','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'Enter the nickname of the Server 213 player who referred or guided you.',
     'recommender':'Server 213 Player Nickname',
     't-sec9':'Screenshot Verification',
@@ -618,7 +645,7 @@ const TX = {
     't-sec6':'産業選択', IND_PX:'産業',
     't-sec7':'メイン分隊タイプ',
     't-sq1':'ファイター','t-sq2':'シューター','t-sq3':'ライダー',
-    't-sec8':'紹介者ニックネーム',
+    't-sec8':'敵撃破数（キル数）','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11':'スクリーンショット認証','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'移転を案内または紹介してくれた213サーバーのプレイヤー名を入力してください。',
     'recommender':'213サーバーのニックネーム',
     't-sec9':'スクリーンショット認証',
@@ -684,7 +711,7 @@ const TX = {
     't-sec6':'产业选择', IND_PX:'产业',
     't-sec7':'主小队类型',
     't-sq1':'战士','t-sq2':'射手','t-sq3':'骑手',
-    't-sec8':'推荐人昵称',
+    't-sec8':'击杀数','t-kill-lbl':'击杀数','t-kill-tip':'请输入游戏中的击杀数','t-sec9':'黑钱战斗力','t-bm-lbl':'黑钱战斗力','t-bm-tip':'不知道可以不填（选填）','t-sec10-rec':'推荐人昵称','t-sec11':'截图验证','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'请输入引导或推荐您迁移至213服务器的213服务器玩家昵称。',
     'recommender':'213服务器玩家昵称',
     't-sec9':'截图验证',
@@ -889,6 +916,10 @@ function save(){
     name:pData.name, uid:pData.uid, fromSid:pData.sid,
     mode:selModeVal,
     cpMigr:(()=>{const v=parseFloat(document.getElementById('cp-migr').value)||0;return Math.round(v*1000000);})(),
+    killScore:getRaw('inp-kill'),
+    blackMoney:getRaw('inp-bm'),
+    killScore:getRaw('inp-kill'),
+    blackMoney:getRaw('inp-bm'),
     apc1:document.getElementById('apc1').value.trim()||'-',
     apc2:document.getElementById('apc2').value.trim()||'-',
     apc3:document.getElementById('apc3').value.trim()||'-',
@@ -906,6 +937,8 @@ function save(){
     <div class="done-row"><span>${f.F_UID}</span><span>${entry.uid}</span></div>
     <div class="done-row"><span>${f.F_FROM}</span><span>#${entry.fromSid} → #213</span></div>
     <div class="done-row"><span>${f.F_MODE}</span><span>${entry.mode}</span></div>
+    <div class="done-row"><span>${f.F_KILL||'킬수'}</span><span>${fmtN(entry.killScore)}</span></div>
+    <div class="done-row"><span>${f.F_BM||'블랙머니'}</span><span>${entry.blackMoney?fmtN(entry.blackMoney):'미입력'}</span></div>
     <div class="done-row"><span>${f.F_MIGR}</span><span>${parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)}M</span></div>
     <div class="done-row"><span>${f.F_APC1}</span><span>${entry.apc1||'-'}</span></div>
     <div class="done-row"><span>${f.F_APC2}</span><span>${entry.apc2||'-'}</span></div>
