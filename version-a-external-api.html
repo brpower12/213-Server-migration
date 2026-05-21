@@ -32,7 +32,7 @@ body.lang-zh{font-family:'Noto Sans SC',sans-serif}
 .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2);font-size:11px;padding:4px 14px;border-radius:20px;margin-bottom:14px;letter-spacing:1px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hdr-title{font-family:'Black Han Sans',sans-serif;font-size:42px;letter-spacing:4px;background:linear-gradient(135deg,#fff 30%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hdr-title{font-family:'Black Han Sans',sans-serif;font-size:32px;letter-spacing:2px;background:linear-gradient(135deg,#fff 30%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
 .hdr-sub{font-size:13px;color:var(--text2);margin-bottom:8px}
 .hdr-credit{font-size:11px;color:var(--text3)}
 .hdr-credit b{color:rgba(212,168,67,.7);font-weight:400}
@@ -212,7 +212,7 @@ input[type=file]{display:none}
 
   <div class="hdr">
     <div class="live-badge"><span class="live-dot"></span><span id="t-live"></span></div>
-    <div class="hdr-title">213</div>
+    <div class="hdr-title" id="t-main-title">213 이민 신청</div>
     <div class="hdr-sub" id="t-sub"></div>
     <div class="hdr-credit">Designed by <b>213NXT 부앙(Bu-ang)</b></div>
   </div>
@@ -265,7 +265,7 @@ input[type=file]{display:none}
           <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span id="t-migr-lbl"></span>
         </div>
-        <input type="text" id="cp-migr" inputmode="numeric" oninput="fmtCP(this)">
+        <input type="text" id="cp-migr" inputmode="decimal" placeholder="예: 182.4" oninput="showUnit()">
         <div class="migr-tip" id="t-migr-tip"></div>
       </div>
     </div>
@@ -277,17 +277,17 @@ input[type=file]{display:none}
         <div>
           <div class="apc-badge" id="t-apc1b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp"></span></div>
-          <input type="text" id="apc1" inputmode="numeric" oninput="fmtCP(this)">
+          <input type="text" id="apc1" placeholder="예: 5.52G">
         </div>
         <div>
           <div class="apc-badge" id="t-apc2b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp2"></span></div>
-          <input type="text" id="apc2" inputmode="numeric" oninput="fmtCP(this)">
+          <input type="text" id="apc2" placeholder="예: 1.6G / 900M">
         </div>
         <div>
           <div class="apc-badge" id="t-apc3b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp3"></span></div>
-          <input type="text" id="apc3" inputmode="numeric" oninput="fmtCP(this)">
+          <input type="text" id="apc3" placeholder="예: 900M / 700M">
         </div>
       </div>
     </div>
@@ -450,14 +450,14 @@ input[type=file]{display:none}
 
 <script>
 // ═══════════ 설정 ═══════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxbMJQVNhLR7k3ZcnXaa4HmOGzWDqWeI-QNFuFk87IKz4rI-t4jEgYpheIS0iHE7al7Og/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwIV5nKonb_IctNm4aGoo7_mU3JD_3KmhaB2Cg2vau18Foukrn5MEu522X9MA0h0mqUHA/exec';
 const ADMIN_PW  = '213777';
 
 // ═══════════ 번역 ═══════════
 // 키 = HTML의 id 속성과 1:1 매핑
 const TX = {
   ko:{
-    't-live':'LIVE · 이민 신청 접수 중',
+    't-main-title':'213 이민 신청','t-live':'LIVE · 이민 신청 접수 중',
     't-sub':'다른 서버 → 213서버 합류',
     't-sec1':'플레이어 정보',
     't-lbl-nick':'닉네임 *',
@@ -472,7 +472,7 @@ const TX = {
     't-group':'연맹 이민','t-groupD':'연맹과 함께',
     't-sec3':'이민 전투력',
     't-migr-lbl':'이민 전투력',
-    't-migr-tip':'게임에서 확인한 이민 전투력 수치를 입력해주세요',
+    't-migr-tip':'M 단위로 입력해주세요. 예) 182.4M → 182.4 입력',
     't-sec4':'APC 편대 전투력',
     't-apc1b':'1편대','t-apc2b':'2편대','t-apc3b':'3편대',
     't-apc-cp':'전투력','t-apc-cp2':'전투력','t-apc-cp3':'전투력',
@@ -527,7 +527,7 @@ const TX = {
     APC_MODAL_CAP:'게임 화면에서 모든 APC 차량과 전투력 수치(5.5G, 1.6G 등)가 보이도록 캡처해주세요.',
   },
   en:{
-    't-live':'LIVE · Migration Open',
+    't-main-title':'213 Migration','t-live':'LIVE · Migration Open',
     't-sub':'Other Server → Join Server 213',
     't-sec1':'Player Info',
     't-lbl-nick':'Nickname *',
@@ -542,7 +542,7 @@ const TX = {
     't-group':'Alliance','t-groupD':'Migrate with alliance',
     't-sec3':'Migration CP',
     't-migr-lbl':'Migration Combat Power',
-    't-migr-tip':'Enter your migration CP shown in-game',
+    't-migr-tip':'Enter in M units. e.g. 182.4M → type 182.4',
     't-sec4':'APC Squad CP',
     't-apc1b':'Squad 1','t-apc2b':'Squad 2','t-apc3b':'Squad 3',
     't-apc-cp':'CP','t-apc-cp2':'CP','t-apc-cp3':'CP',
@@ -593,7 +593,7 @@ const TX = {
     APC_MODAL_CAP:'Capture with all APC vehicles and CP values (5.5G, 1.6G etc.) visible.',
   },
   ja:{
-    't-live':'LIVE · 移住申請受付中',
+    't-main-title':'213 移住申請','t-live':'LIVE · 移住申請受付中',
     't-sub':'他サーバー → 213サーバー加入',
     't-sec1':'プレイヤー情報',
     't-lbl-nick':'ニックネーム *',
@@ -608,7 +608,7 @@ const TX = {
     't-group':'連盟','t-groupD':'連盟と共に移住',
     't-sec3':'移住戦闘力',
     't-migr-lbl':'移住戦闘力',
-    't-migr-tip':'ゲームで確認した移住戦闘力を入力してください',
+    't-migr-tip':'M単位で入力してください。例）182.4M → 182.4と入力',
     't-sec4':'APC分隊戦闘力',
     't-apc1b':'第1分隊','t-apc2b':'第2分隊','t-apc3b':'第3分隊',
     't-apc-cp':'戦闘力','t-apc-cp2':'戦闘力','t-apc-cp3':'戦闘力',
@@ -659,7 +659,7 @@ const TX = {
     APC_MODAL_CAP:'全APC車両と戦闘力数値が見えるようにキャプチャしてください。',
   },
   zh:{
-    't-live':'LIVE · 移民申请受理中',
+    't-main-title':'213 移民申请','t-live':'LIVE · 移民申请受理中',
     't-sub':'其他服务器 → 加入213服务器',
     't-sec1':'玩家信息',
     't-lbl-nick':'昵称 *',
@@ -674,7 +674,7 @@ const TX = {
     't-group':'联盟','t-groupD':'与联盟一起移民',
     't-sec3':'移民战斗力',
     't-migr-lbl':'移民战斗力',
-    't-migr-tip':'请输入游戏中确认的移民战斗力数值',
+    't-migr-tip':'请以M为单位输入。例：182.4M → 输入182.4',
     't-sec4':'APC小队战斗力',
     't-apc1b':'第1小队','t-apc2b':'第2小队','t-apc3b':'第3小队',
     't-apc-cp':'战斗力','t-apc-cp2':'战斗力','t-apc-cp3':'战斗力',
@@ -799,6 +799,16 @@ document.getElementById('inp-uid').addEventListener('keydown',e=>{if(e.key==='En
 function selMode(el){document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');selModeVal=el.dataset.mode;}
 function selSq(el){document.querySelectorAll('.sq-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');selSqVal=el.dataset.sq;}
 
+// ═══════════ 이민전투력 단위 표시 ═══════════
+function showUnit(){
+  const val = document.getElementById('cp-migr').value.trim();
+  const el  = document.getElementById('migr-unit');
+  if(!val||isNaN(val)){el.textContent='';return;}
+  const n = parseFloat(val);
+  if(n>0) el.textContent = '= '+n.toFixed(1)+'M';
+  else    el.textContent = '';
+}
+
 // ═══════════ 쉼표 포맷 ═══════════
 function fmtCP(inp){
   const raw=inp.value.replace(/,/g,'');
@@ -858,7 +868,7 @@ document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Ent
 const GRADES=JSON.parse(localStorage.getItem('grade_ranges213')||'null')||
   {일반:{min:0,max:149},중급:{min:150,max:299},고급:{min:300,max:499},특급:{min:500,max:999}};
 function autoGrade(cpMigr){
-  const v=Number(cpMigr)/10000;
+  const v=Number(cpMigr)/1000000; // M 단위로 변환
   for(const t of['일반','중급','고급','특급']){
     if(v>=(GRADES[t]?.min??0)&&v<=(GRADES[t]?.max??999))return t;
   }
@@ -878,8 +888,10 @@ function save(){
     id:Date.now(), registeredAt:new Date().toLocaleString('ko-KR'),
     name:pData.name, uid:pData.uid, fromSid:pData.sid,
     mode:selModeVal,
-    cpMigr:getRaw('cp-migr'),
-    apc1:getRaw('apc1'), apc2:getRaw('apc2'), apc3:getRaw('apc3'),
+    cpMigr:(()=>{const v=parseFloat(document.getElementById('cp-migr').value)||0;return Math.round(v*1000000);})(),
+    apc1:document.getElementById('apc1').value.trim()||'-',
+    apc2:document.getElementById('apc2').value.trim()||'-',
+    apc3:document.getElementById('apc3').value.trim()||'-',
     activeTime:document.getElementById('time-from').value+' ~ '+document.getElementById('time-to').value,
     industry:selIndVal, squad:selSqVal, recommender:rec, status:'검토중'
   };
@@ -924,9 +936,9 @@ function renderAdmin(){
       <td>${r.mode||'-'}</td>
       <td>${r.cpMigr?autoGrade(r.cpMigr):'<span style="color:var(--text3)">-</span>'}</td>
       <td style="color:var(--purple2);font-weight:500">${fmtN(r.cpMigr)}</td>
-      <td style="color:var(--gold2)">${fmtN(r.apc1)}</td>
-      <td style="color:var(--gold2)">${fmtN(r.apc2)}</td>
-      <td style="color:var(--gold2)">${fmtN(r.apc3)}</td>
+      <td style="color:var(--gold2)">${r.apc1||'-'}</td>
+      <td style="color:var(--gold2)">${r.apc2||'-'}</td>
+      <td style="color:var(--gold2)">${r.apc3||'-'}</td>
       <td style="color:var(--accent2);font-size:11px">${r.activeTime||'-'}</td>
       <td style="color:var(--text2)">${px}${r.industry||'-'}</td>
       <td>${r.squad||'-'}</td>
