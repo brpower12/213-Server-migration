@@ -185,10 +185,10 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .apc-val{color:var(--gold);font-size:11px}
 .time-val{color:var(--cyan2);font-size:11px}
 
-.status-sel{-webkit-appearance:none;appearance:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;outline:none;border:1px solid transparent;min-width:62px;text-align:center}
-.s-검토중{background:rgba(61,139,255,.12);border-color:rgba(61,139,255,.3);color:var(--accent2)}
-.s-수락{background:rgba(30,168,106,.12);border-color:rgba(30,168,106,.3);color:var(--green2)}
-.s-거절{background:rgba(214,48,48,.1);border-color:rgba(214,48,48,.25);color:var(--red2)}
+.status-sel{-webkit-appearance:none;appearance:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;outline:none;border:1px solid transparent;min-width:62px;text-align:center;background:var(--bg3);color:var(--text);font-family:inherit}
+.s-검토중{background:rgba(61,139,255,.15)!important;border-color:rgba(61,139,255,.4)!important;color:var(--accent2)!important}
+.s-수락{background:rgba(30,168,106,.15)!important;border-color:rgba(30,168,106,.4)!important;color:var(--green2)!important}
+.s-거절{background:rgba(214,48,48,.12)!important;border-color:rgba(214,48,48,.35)!important;color:var(--red2)!important}
 
 .del-btn{background:rgba(214,48,48,.12);border:1px solid rgba(214,48,48,.35);color:var(--red2);cursor:pointer;padding:6px 10px;border-radius:6px;font-size:15px;line-height:1;transition:.15s}
 .del-btn:hover{background:rgba(214,48,48,.22);border-color:rgba(214,48,48,.5)}
@@ -371,7 +371,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script>
-var SHEET = 'https://script.google.com/macros/s/AKfycbz_DtimyQzY2SRQvSH-YwHV0EFYp3EGqGHTjIP-6cQU3rHTLwSxVEVBlFKj_zdLHGlNhA/exec';
+var SHEET = 'https://script.google.com/macros/s/AKfycby0N2oGYeUl0qiGUHrXDAboHe43com4CGCRNWHPsdsV-gaPuFan1TElhhn2rOPWhZDf9g/exec';
 var PW    = localStorage.getItem('a213pw') || '213777';
 var SLOTS = JSON.parse(localStorage.getItem('a213slots') || 'null') || {일반:60,중급:20,고급:5,특급:1};
 var GR    = JSON.parse(localStorage.getItem('a213gr') || 'null') || {일반:{min:0,max:89},중급:{min:90,max:139},고급:{min:140,max:169},특급:{min:170,max:400}};
@@ -736,6 +736,7 @@ function fallbackCopy(uid) {
 
 function changeStatus(sel, idx, status) {
   sel.className = 'status-sel s-' + status;
+  sel.style.cssText = '';
   var data = getFiltered();
   var orig = rows.indexOf(data[idx]);
   if (orig >= 0) rows[orig].status = status;
