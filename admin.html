@@ -509,13 +509,14 @@ async function loadData(){
 
 // ══════ 등급 계산 ══════
 function grade(cpMigr){
-  // 소수점 포함 M단위로 변환 (182400000 → 182.4, "182.4M" → 182.4)
   let v = 0;
   const s = String(cpMigr).replace('M','').trim();
-  if(parseFloat(s) > 1000){ v = parseFloat(s)/1000000; } // 숫자 원본값
-  else { v = parseFloat(s)||0; } // 이미 M단위
+  if(parseFloat(s) > 1000){ v = parseFloat(s)/1000000; }
+  else { v = parseFloat(s)||0; }
+  // 소수점 버림 후 비교 (89.2M → 89로 비교)
+  const vFloor = Math.floor(v);
   for(const t of TIERS){
-    if(v>=(GR[t]?.min??0) && v<=(GR[t]?.max??999)) return t;
+    if(vFloor>=(GR[t]?.min??0) && vFloor<=(GR[t]?.max??999)) return t;
   }
   return '-';
 }
