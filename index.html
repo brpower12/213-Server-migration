@@ -29,7 +29,7 @@ body.lang-zh{font-family:'Noto Sans SC',sans-serif}
 .lang-btn.on{background:rgba(79,142,247,.15);border-color:var(--accent);color:var(--accent2);font-weight:500}
 
 .hdr{padding:1.75rem 0 1.5rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
-.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--accent2);font-size:11px;padding:4px 14px;border-radius:20px;margin-bottom:14px;letter-spacing:1px}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(46,184,122,.1);border:1px solid rgba(46,184,122,.3);color:#2dd47d;font-size:11px;padding:5px 16px;border-radius:20px;margin-bottom:14px;letter-spacing:1.5px;font-weight:500;box-shadow:0 0 12px rgba(46,184,122,.15)}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .hdr-title{font-family:'Black Han Sans',sans-serif;font-size:32px;letter-spacing:2px;background:linear-gradient(135deg,#fff 30%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
@@ -37,11 +37,11 @@ body.lang-zh{font-family:'Noto Sans SC',sans-serif}
 .hdr-credit{font-size:11px;color:var(--text3)}
 .hdr-credit b{color:rgba(212,168,67,.7);font-weight:400}
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:.875rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-bottom:.875rem;transition:border-color .2s}
 .card-uid{border-color:rgba(79,142,247,.35);background:linear-gradient(135deg,#111318,#13172280)}
 .sec-label{font-size:10px;letter-spacing:2.5px;color:var(--text2);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
 .sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.sec-num{color:var(--accent);font-style:normal}
+.sec-num{color:var(--accent2);font-style:normal;font-weight:700;font-size:12px;letter-spacing:1px}
 
 /* 입력 공통 */
 input[type=text],select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:11px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;height:44px}
@@ -56,8 +56,8 @@ select option{background:var(--bg3)}
 .uid-inp{font-size:15px;letter-spacing:1px;border-color:rgba(79,142,247,.35)!important;padding-right:70px!important}
 .uid-inp:focus{border-color:var(--accent)!important}
 .uid-cnt{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text3);pointer-events:none}
-.uid-cnt.full{color:var(--green)}
-.btn-confirm{width:100%;background:linear-gradient(135deg,var(--accent),#3a7ee0);color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;transition:.2s;margin-top:10px;box-shadow:0 4px 15px rgba(79,142,247,.3)}
+.uid-cnt.full{color:#2dd47d;font-weight:700}
+.btn-confirm{width:100%;background:linear-gradient(135deg,#3d8bff,#1a5fd4);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;transition:.2s;margin-top:10px;box-shadow:0 4px 20px rgba(61,139,255,.4);letter-spacing:.5px}
 .btn-confirm:hover{filter:brightness(1.1)}
 .err-box{display:none;background:rgba(224,72,72,.08);border:1px solid rgba(224,72,72,.25);color:var(--red);font-size:12px;padding:9px 13px;border-radius:var(--r);margin-top:8px}
 .err-box.on{display:block}
@@ -138,16 +138,16 @@ select option{background:var(--bg3)}
 input[type=file]{display:none}
 
 /* 제출 */
-.btn-save{width:100%;background:linear-gradient(135deg,var(--green),#1a9060);color:#fff;border:none;border-radius:var(--r2);padding:16px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:.5rem;letter-spacing:.5px;transition:.2s;box-shadow:0 4px 20px rgba(46,184,122,.3)}
-.btn-save:hover{filter:brightness(1.08)}
+.btn-save{width:100%;background:linear-gradient(135deg,#1ea86a,#0d7a4d);color:#fff;border:none;border-radius:var(--r2);padding:17px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:.5rem;letter-spacing:1px;transition:.2s;box-shadow:0 6px 25px rgba(30,168,106,.4);text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.btn-save:hover{filter:brightness(1.1);box-shadow:0 8px 30px rgba(30,168,106,.5)}
 .btn-save:active{transform:scale(.99)}
 
 /* 완료 */
 .done{display:none;text-align:center;padding:3rem 1rem}
 .done.on{display:block;animation:fd .4s ease}
-.done-ring{width:76px;height:76px;border-radius:50%;background:rgba(46,184,122,.12);border:2px solid var(--green);margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center}
+.done-ring{width:84px;height:84px;border-radius:50%;background:rgba(30,168,106,.15);border:3px solid #2dd47d;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(30,168,106,.25)}
 .done-ring svg{width:34px;height:34px;stroke:var(--green);fill:none}
-.done-title{font-family:'Black Han Sans',sans-serif;font-size:26px;color:#fff;margin-bottom:8px}
+.done-title{font-family:'Black Han Sans',sans-serif;font-size:28px;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--green2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .done-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;white-space:pre-line}
 .done-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem;text-align:left;margin-bottom:1rem}
 .done-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)}
@@ -156,7 +156,7 @@ input[type=file]{display:none}
 .done-row span:last-child{color:var(--text);font-weight:500;text-align:right;word-break:break-all}
 
 /* 관리패널 */
-.admin-toggle{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;transition:.2s;font-family:inherit}
+.admin-toggle{width:100%;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:var(--r2);padding:13px 18px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;transition:.2s;font-family:inherit}
 .admin-toggle:hover{border-color:var(--border2);color:var(--text)}
 .admin-panel{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;margin-top:.5rem}
 .admin-panel.on{display:block}
@@ -509,7 +509,7 @@ const TX = {
     't-sec6':'산업 선택', IND_PX:'산업 ',
     't-sec7':'1편대 주 병종',
     't-sq1':'파이터','t-sq2':'슈터','t-sq3':'라이더',
-    't-sec8':'적 처치 (킬수)','t-kill-lbl':'적 처치 수','t-kill-tip':'게임 내 적 처치 수를 입력해주세요','t-sec9':'블랙머니 전투력','t-bm-lbl':'블랙머니 전투력','t-bm-tip':'모를 경우 입력하지 않아도 됩니다 (선택)','t-sec10-rec':'추천인 / 지인 닉네임','t-sec11':'스크린샷 인증','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
+    't-sec8':'적 처치 (킬수)','t-kill-lbl':'적 처치 수','t-kill-tip':'게임 내 적 처치 수를 입력해주세요','t-sec9-bm':'블랙머니 전투력','t-bm-lbl':'블랙머니 전투력','t-bm-tip':'모를 경우 입력하지 않아도 됩니다 (선택)','t-sec10-rec':'추천인 / 지인 닉네임','t-sec11':'스크린샷 인증','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'이민을 소개해준 213 서버 유저 닉네임, 또는 이민 상담을 해준 분의 닉네임을 입력해주세요.',
     'recommender':'213 서버 유저 닉네임',
     't-sec9':'스크린샷 인증',
@@ -579,7 +579,7 @@ const TX = {
     't-sec6':'Industry', IND_PX:'Industry ',
     't-sec7':'Main Squad Type',
     't-sq1':'Fighter','t-sq2':'Shooter','t-sq3':'Rider',
-    't-sec8':'Enemy Kills','t-kill-lbl':'Kill Points','t-kill-tip':'Enter your kill points shown in-game','t-sec9':'Black Money Power','t-bm-lbl':'Black Money Power','t-bm-tip':'Optional — leave blank if unknown','t-sec10-rec':'Referrer Nickname','t-sec11':'Screenshot Verification','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
+    't-sec8':'Enemy Kills','t-kill-lbl':'Kill Points','t-kill-tip':'Enter your kill points shown in-game','t-sec9-bm':'Black Money Power','t-bm-lbl':'Black Money Power','t-bm-tip':'Optional — leave blank if unknown','t-sec10-rec':'Referrer Nickname','t-sec11':'Screenshot Verification','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'Enter the nickname of the Server 213 player who referred or guided you.',
     'recommender':'Server 213 Player Nickname',
     't-sec9':'Screenshot Verification',
@@ -645,7 +645,7 @@ const TX = {
     't-sec6':'産業選択', IND_PX:'産業',
     't-sec7':'メイン分隊タイプ',
     't-sq1':'ファイター','t-sq2':'シューター','t-sq3':'ライダー',
-    't-sec8':'敵撃破数（キル数）','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11':'スクリーンショット認証','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
+    't-sec8':'敵撃破数（キル数）','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11':'スクリーンショット認証','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'移転を案内または紹介してくれた213サーバーのプレイヤー名を入力してください。',
     'recommender':'213サーバーのニックネーム',
     't-sec9':'スクリーンショット認証',
@@ -711,7 +711,7 @@ const TX = {
     't-sec6':'产业选择', IND_PX:'产业',
     't-sec7':'主小队类型',
     't-sq1':'战士','t-sq2':'射手','t-sq3':'骑手',
-    't-sec8':'击杀数','t-kill-lbl':'击杀数','t-kill-tip':'请输入游戏中的击杀数','t-sec9':'黑钱战斗力','t-bm-lbl':'黑钱战斗力','t-bm-tip':'不知道可以不填（选填）','t-sec10-rec':'推荐人昵称','t-sec11':'截图验证','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
+    't-sec8':'击杀数','t-kill-lbl':'击杀数','t-kill-tip':'请输入游戏中的击杀数','t-sec9-bm':'黑钱战斗力','t-bm-lbl':'黑钱战斗力','t-bm-tip':'不知道可以不填（选填）','t-sec10-rec':'推荐人昵称','t-sec11':'截图验证','t-sec8':'敵撃破数','t-kill-lbl':'敵撃破数','t-kill-tip':'ゲーム内の敵撃破数を入力してください','t-sec9-bm':'ブラックマネー戦闘力','t-bm-lbl':'ブラックマネー戦闘力','t-bm-tip':'不明の場合は空欄でも構いません（任意）','t-sec10-rec':'紹介者ニックネーム','t-sec11-ss':'スクリーンショット認証',
     't-rec-tip':'请输入引导或推荐您迁移至213服务器的213服务器玩家昵称。',
     'recommender':'213服务器玩家昵称',
     't-sec9':'截图验证',
