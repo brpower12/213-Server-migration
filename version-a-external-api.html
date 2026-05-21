@@ -906,10 +906,10 @@ function save(){
     <div class="done-row"><span>${f.F_UID}</span><span>${entry.uid}</span></div>
     <div class="done-row"><span>${f.F_FROM}</span><span>#${entry.fromSid} → #213</span></div>
     <div class="done-row"><span>${f.F_MODE}</span><span>${entry.mode}</span></div>
-    <div class="done-row"><span>${f.F_MIGR}</span><span>${fmtN(entry.cpMigr)}</span></div>
-    <div class="done-row"><span>${f.F_APC1}</span><span>${fmtN(entry.apc1)}</span></div>
-    <div class="done-row"><span>${f.F_APC2}</span><span>${fmtN(entry.apc2)}</span></div>
-    <div class="done-row"><span>${f.F_APC3}</span><span>${fmtN(entry.apc3)}</span></div>
+    <div class="done-row"><span>${f.F_MIGR}</span><span>${parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)}M</span></div>
+    <div class="done-row"><span>${f.F_APC1}</span><span>${entry.apc1||'-'}</span></div>
+    <div class="done-row"><span>${f.F_APC2}</span><span>${entry.apc2||'-'}</span></div>
+    <div class="done-row"><span>${f.F_APC3}</span><span>${entry.apc3||'-'}</span></div>
     <div class="done-row"><span>${f.F_TIME}</span><span>${entry.activeTime}</span></div>
     <div class="done-row"><span>${f.F_IND}</span><span>${px}${entry.industry}</span></div>
     <div class="done-row"><span>${f.F_SQ}</span><span>${entry.squad}</span></div>
