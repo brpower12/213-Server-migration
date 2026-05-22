@@ -368,7 +368,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script>
-var SHEET = 'https://script.google.com/macros/s/AKfycbyyfw8_gI0r3hzvzYD9r3PthhupHvicem8wZvD7j37cWzjl9kuq1qm9PbekAG_Vkseunw/exec';
+var SHEET = 'https://script.google.com/macros/s/AKfycbzjd15i-fE8maFdp2QaWcrUZeYhzdp7iXNYrIm_oXPrJ5YcZTK4VSShk0_pg2gBGvpaVQ/exec';
 var PW = localStorage.getItem('a213pw') || '213777';
 var SLOTS = JSON.parse(localStorage.getItem('a213slots') || 'null') || {일반:60,중급:20,고급:5,특급:1};
 var GR = JSON.parse(localStorage.getItem('a213gr') || 'null') || {일반:{min:0,max:89},중급:{min:90,max:139},고급:{min:140,max:169},특급:{min:170,max:400}};
@@ -751,17 +751,30 @@ function changeStatus(sel, idx, status) {
 
 function delRow(idx, name) {
  var data = getFiltered();
- if (!confirm('"' + name + '" 삭제하시겠습니까?\n(Google Sheets에서도 직접 삭제해주세요)')) return;
+ if (!confirm('"' + name + '" 삭제하시겠습니까?')) return;
  var orig = rows.indexOf(data[idx]);
- if (orig >= 0) rows.splice(orig, 1);
+ if (orig >= 0) {
+  var uid = rows[orig].uid;
+  rows.splice(orig, 1);
+  // Sheets에서도 삭제
+  var url = SHEET + '?action=deleteRow&uid=' + encodeURIComponent(uid) + '&t=' + Date.now();
+  fetch(url)
+    .then(function(r){return r.json();})
+    .then(function(j){toast(j.result==='ok'?'🗑 삭제됨: '+name+' (Sheets 반영)':'🗑 삭제됨: '+name+' (Sheets 반영 실패)');})
+    .catch(function(){toast('🗑 삭제됨: '+name+' (오프라인)');});
+ }
  updateDropdowns(); renderAll();
- toast('🗑 삭제됨: ' + name);
 }
 
 function clearAll() {
- if (!confirm('전체 삭제하시겠습니까?\n(Google Sheets에서도 직접 삭제해주세요)')) return;
- rows = []; updateDropdowns(); renderAll();
- toast('🗑 전체 삭제됨');
+ if (!confirm('전체 삭제하시겠습니까?')) return;
+ rows = [];
+ var url = SHEET + '?action=deleteAll&t=' + Date.now();
+ fetch(url)
+   .then(function(r){return r.json();})
+   .then(function(j){toast(j.result==='ok'?'🗑 전체 삭제 완료 (Sheets 반영)':'🗑 전체 삭제 (Sheets 반영 실패)');})
+   .catch(function(){toast('🗑 전체 삭제됨 (오프라인)');});
+ updateDropdowns(); renderAll();
 }
 
 function exportExcel() {
