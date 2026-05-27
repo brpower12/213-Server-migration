@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>213 서버 이민 신청</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -24,7 +24,7 @@ body.lang-zh{font-family:'Noto Sans SC',sans-serif}
 .wrap{width:100%;max-width:480px;padding:0 1rem;margin:0 auto}
 
 .lang-bar{display:flex;justify-content:center;padding:.875rem 0 0;gap:6px}
-.lang-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit}
+.lang-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
 .lang-btn:hover{border-color:var(--border2);color:var(--text)}
 .lang-btn.on{background:rgba(79,142,247,.15);border-color:var(--accent);color:var(--accent2);font-weight:500}
 
@@ -150,7 +150,7 @@ input[type=file]{display:none}
 .done-title{font-family:'Black Han Sans',sans-serif;font-size:28px;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--green2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .done-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;white-space:pre-line}
 .done-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1rem 1.25rem;text-align:left;margin-bottom:1rem}
-.done-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)}
+.done-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);gap:8px}
 .done-row:last-child{border-bottom:none}
 .done-row span:first-child{color:var(--text2);flex-shrink:0;margin-right:12px}
 .done-row span:last-child{color:var(--text);font-weight:500;text-align:right;word-break:break-all}
@@ -227,7 +227,7 @@ input[type=file]{display:none}
       </div>
       <div>
         <label class="field-label" id="t-lbl-server"></label>
-        <input type="text" id="inp-server" maxlength="6">
+        <input type="text" id="inp-server" inputmode="numeric" maxlength="6">
       </div>
     </div>
     <label class="field-label" id="t-lbl-uid"></label>
@@ -266,7 +266,7 @@ input[type=file]{display:none}
           <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span id="t-migr-lbl"></span>
         </div>
-        <input type="text" id="cp-migr" inputmode="decimal" placeholder="예: 182.4" oninput="showUnit()">
+        <input type="text" id="cp-migr" inputmode="decimal" placeholder="" oninput="showUnit()">
         <div class="migr-tip" id="t-migr-tip"></div>
       </div>
     </div>
@@ -278,17 +278,17 @@ input[type=file]{display:none}
         <div>
           <div class="apc-badge" id="t-apc1b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp"></span></div>
-          <input type="text" id="apc1" placeholder="예: 5.52G">
+          <input type="text" id="apc1" placeholder="">
         </div>
         <div>
           <div class="apc-badge" id="t-apc2b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp2"></span></div>
-          <input type="text" id="apc2" placeholder="예: 1.6G / 900M">
+          <input type="text" id="apc2" placeholder="">
         </div>
         <div>
           <div class="apc-badge" id="t-apc3b"></div>
           <div class="apc-lbl"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="16" height="9" rx="2"/><circle cx="6" cy="19" r="2"/><circle cx="14" cy="19" r="2"/><path d="M18 11h2a2 2 0 0 1 2 2v2h-4"/><path d="M8 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span id="t-apc-cp3"></span></div>
-          <input type="text" id="apc3" placeholder="예: 900M / 700M">
+          <input type="text" id="apc3" placeholder="">
         </div>
       </div>
     </div>
@@ -354,7 +354,7 @@ input[type=file]{display:none}
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:#ff7070;fill:none;width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <span id="t-kill-lbl"></span>
           </div>
-          <input type="text" id="inp-kill" inputmode="numeric" oninput="fmtCP(this)" placeholder="예: 24,709,428">
+          <input type="text" id="inp-kill" inputmode="numeric" oninput="fmtCP(this)" placeholder="">
           <div class="migr-tip" id="t-kill-tip"></div>
         </div>
       </div>
@@ -367,7 +367,7 @@ input[type=file]{display:none}
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" style="stroke:var(--gold2);fill:none;width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             <span id="t-bm-lbl"></span>
           </div>
-          <input type="text" id="inp-bm" inputmode="numeric" oninput="fmtCP(this)" placeholder="예: 1,786,217,310">
+          <input type="text" id="inp-bm" inputmode="numeric" oninput="fmtCP(this)" placeholder="">
           <div class="migr-tip" id="t-bm-tip"></div>
         </div>
       </div>
@@ -478,7 +478,7 @@ input[type=file]{display:none}
 
 <script>
 // ═══════════ 설정 ═══════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzjd15i-fE8maFdp2QaWcrUZeYhzdp7iXNYrIm_oXPrJ5YcZTK4VSShk0_pg2gBGvpaVQ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyBNX65uDW_0dwsD7rKz-pTZQBXnyz7Ju7QW1H0neP1BTXW9XSDDTYW4klvIdBhuY5GBw/exec';
 const ADMIN_PW  = '213777';
 
 // ═══════════ 번역 ═══════════
@@ -495,7 +495,7 @@ const TX = {
     'inp-name':'게임 내 닉네임',
     'inp-server':'예: 213',
     'inp-uid':'숫자 16자리 입력',
-    't-uid-warn':'⚠ UID는 게임 내 프로필에서 정확히 확인 후 입력해주세요. 잘못된 UID 입력 시 이민 처리가 불가할 수 있습니다.','t-confirm':'확인 후 신청서 작성하기 →',
+    'ph-migr':'예: 182.4','ph-apc1':'예: 5.52G','ph-apc2':'예: 1.6G / 900M','ph-apc3':'예: 900M / 700M','ph-kill':'예: 24,709,428','ph-bm':'예: 1,786,217,310','t-uid-warn':'⚠ UID는 게임 내 프로필에서 정확히 확인 후 입력해주세요. 잘못된 UID 입력 시 이민 처리가 불가할 수 있습니다.','t-confirm':'확인 후 신청서 작성하기 →',
     't-sec2':'이동 방식',
     't-alone':'혼자','t-aloneD':'단독 이민',
     't-group':'연맹 이민','t-groupD':'연맹과 함께',
@@ -569,9 +569,9 @@ const TX = {
     'inp-name':'In-game Nickname',
     'inp-server':'e.g. 213',
     'inp-uid':'Enter 16-digit UID',
-    't-uid-warn':'⚠ Please double-check your UID from your in-game profile before entering. Incorrect UID may result in failed migration processing.','t-confirm':'Confirm & Fill Out Form →',
+    'ph-migr':'e.g. 182.4','ph-apc1':'e.g. 5.52G','ph-apc2':'e.g. 1.6G / 900M','ph-apc3':'e.g. 900M / 700M','ph-kill':'e.g. 24,709,428','ph-bm':'e.g. 1,786,217,310','t-uid-warn':'⚠ Please double-check your UID from your in-game profile before entering. Incorrect UID may result in failed migration processing.','t-confirm':'Confirm & Fill Out Form →',
     't-sec2':'Migration Type',
-    't-alone':'Solo','t-aloneD':'Individual migration',
+    't-alone':'Solo','t-aloneD':'Solo Migration',
     't-group':'Alliance','t-groupD':'Migrate with Alliance',
     't-sec3':'Migration Power',
     't-migr-lbl':'Migration Power',
@@ -643,7 +643,7 @@ const TX = {
     'inp-name':'ゲーム内ニックネーム',
     'inp-server':'例: 213',
     'inp-uid':'16桁の数字を入力',
-    't-uid-warn':'⚠ ゲーム内プロフィールでUIDを正確に確認してから入力してください。誤ったUIDでは移転処理ができない場合があります。','t-confirm':'確認して申請書を記入する →',
+    'ph-migr':'例: 182.4','ph-apc1':'例: 5.52G','ph-apc2':'例: 1.6G / 900M','ph-apc3':'例: 900M / 700M','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ ゲーム内プロフィールでUIDを正確に確認してから入力してください。誤ったUIDでは移転処理ができない場合があります。','t-confirm':'確認して申請書を記入する →',
     't-sec2':'移転方式',
     't-alone':'単独','t-aloneD':'個人移転',
     't-group':'連盟','t-groupD':'連盟と一緒に移転する',
@@ -717,7 +717,7 @@ const TX = {
     'inp-name':'游戏内昵称',
     'inp-server':'例: 213',
     'inp-uid':'请输入16位数字',
-    't-uid-warn':'⚠ 请在游戏内个人资料中确认UID后再填写。UID填写错误可能导致迁移处理失败。','t-confirm':'确认并填写申请表 →',
+    'ph-migr':'例: 182.4','ph-apc1':'例: 5.52G','ph-apc2':'例: 1.6G / 900M','ph-apc3':'例: 900M / 700M','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ 请在游戏内个人资料中确认UID后再填写。UID填写错误可能导致迁移处理失败。','t-confirm':'确认并填写申请表 →',
     't-sec2':'迁移方式',
     't-alone':'单独','t-aloneD':'单独迁移',
     't-group':'联盟','t-groupD':'与联盟一同迁移',
@@ -795,6 +795,12 @@ function setLang(l){
   const t=TX[l];
   // id와 번역키가 완전히 1:1 — 모든 span/div/button 텍스트 업데이트
   const uw=document.getElementById('t-uid-warn');if(uw&&t['t-uid-warn'])uw.textContent=t['t-uid-warn'];
+  // placeholder 번역
+  var phMap={'ph-migr':'cp-migr','ph-apc1':'apc1','ph-apc2':'apc2','ph-apc3':'apc3','ph-kill':'inp-kill','ph-bm':'inp-bm'};
+  Object.keys(phMap).forEach(function(pk){
+    var el=document.getElementById(phMap[pk]);
+    if(el&&t[pk]) el.placeholder=t[pk];
+  });
   Object.keys(t).forEach(id=>{
     if(id.startsWith('ERR_')||id.startsWith('F_')||id.startsWith('ADM_')||
        id==='NO_DATA'||id==='EMPTY'||id==='IND_PX'||
@@ -932,6 +938,7 @@ function autoGrade(cpMigr){
 
 // ═══════════ 제출 ═══════════
 function save(){
+  var sbtn=document.getElementById("t-submit");if(sbtn&&sbtn.disabled)return;if(sbtn){sbtn.disabled=true;sbtn.style.opacity="0.6";}
   const t=TX[lang];
   if(!pData){alert(t.ERR_NAME);return;}
   if(!getRaw('cp-migr')){alert(t.ERR_MIGR);return;}
