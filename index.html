@@ -495,7 +495,7 @@ const TX = {
     'inp-name':'게임 내 닉네임',
     'inp-server':'예: 213',
     'inp-uid':'숫자 16자리 입력',
-    'ph-migr':'예: 182.4','ph-apc1':'5.52G','ph-apc2':'1.6G / 900M','ph-apc3':'900M / 700M','ph-kill':'예: 24,709,428','ph-bm':'예: 1,786,217,310','t-uid-warn':'⚠ UID는 게임 내 프로필에서 정확히 확인 후 입력해주세요. 잘못된 UID 입력 시 이민 처리가 불가할 수 있습니다.','t-confirm':'확인 후 신청서 작성하기 →',
+    'ph-migr':'예: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'예: 24,709,428','ph-bm':'예: 1,786,217,310','t-uid-warn':'⚠ UID는 게임 내 프로필에서 정확히 확인 후 입력해주세요. 잘못된 UID 입력 시 이민 처리가 불가할 수 있습니다.','t-confirm':'확인 후 신청서 작성하기 →',
     't-sec2':'이동 방식',
     't-alone':'혼자','t-aloneD':'단독 이민',
     't-group':'연맹 이민','t-groupD':'연맹과 함께',
@@ -569,7 +569,7 @@ const TX = {
     'inp-name':'In-game Nickname',
     'inp-server':'e.g. 213',
     'inp-uid':'Enter 16-digit UID',
-    'ph-migr':'e.g. 182.4','ph-apc1':'5.52G','ph-apc2':'1.6G / 900M','ph-apc3':'900M / 700M','ph-kill':'e.g. 24,709,428','ph-bm':'e.g. 1,786,217,310','t-uid-warn':'⚠ Please double-check your UID from your in-game profile before entering. Incorrect UID may result in failed migration processing.','t-confirm':'Confirm & Fill Out Form →',
+    'ph-migr':'e.g. 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'e.g. 24,709,428','ph-bm':'e.g. 1,786,217,310','t-uid-warn':'⚠ Please double-check your UID from your in-game profile before entering. Incorrect UID may result in failed migration processing.','t-confirm':'Confirm & Fill Out Form →',
     't-sec2':'Migration Type',
     't-alone':'Solo','t-aloneD':'Solo Migration',
     't-group':'Alliance','t-groupD':'Migrate with Alliance',
@@ -643,7 +643,7 @@ const TX = {
     'inp-name':'ゲーム内ニックネーム',
     'inp-server':'例: 213',
     'inp-uid':'16桁の数字を入力',
-    'ph-migr':'例: 182.4','ph-apc1':'5.52G','ph-apc2':'1.6G / 900M','ph-apc3':'900M / 700M','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ ゲーム内プロフィールでUIDを正確に確認してから入力してください。誤ったUIDでは移転処理ができない場合があります。','t-confirm':'確認して申請書を記入する →',
+    'ph-migr':'例: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ ゲーム内プロフィールでUIDを正確に確認してから入力してください。誤ったUIDでは移転処理ができない場合があります。','t-confirm':'確認して申請書を記入する →',
     't-sec2':'移転方式',
     't-alone':'単独','t-aloneD':'個人移転',
     't-group':'連盟','t-groupD':'連盟と一緒に移転する',
@@ -717,7 +717,7 @@ const TX = {
     'inp-name':'游戏内昵称',
     'inp-server':'例: 213',
     'inp-uid':'请输入16位数字',
-    'ph-migr':'例: 182.4','ph-apc1':'5.52G','ph-apc2':'1.6G / 900M','ph-apc3':'900M / 700M','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ 请在游戏内个人资料中确认UID后再填写。UID填写错误可能导致迁移处理失败。','t-confirm':'确认并填写申请表 →',
+    'ph-migr':'例: 182.4','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'例: 24,709,428','ph-bm':'例: 1,786,217,310','t-uid-warn':'⚠ 请在游戏内个人资料中确认UID后再填写。UID填写错误可能导致迁移处理失败。','t-confirm':'确认并填写申请表 →',
     't-sec2':'迁移方式',
     't-alone':'单独','t-aloneD':'单独迁移',
     't-group':'联盟','t-groupD':'与联盟一同迁移',
@@ -796,7 +796,7 @@ function setLang(l){
   // id와 번역키가 완전히 1:1 — 모든 span/div/button 텍스트 업데이트
   const uw=document.getElementById('t-uid-warn');if(uw&&t['t-uid-warn'])uw.textContent=t['t-uid-warn'];
   // placeholder 번역
-  var phMap={'ph-migr':'cp-migr','ph-apc1':'apc1','ph-apc2':'apc2','ph-apc3':'apc3','ph-kill':'inp-kill','ph-bm':'inp-bm'};
+  var phMap={'ph-migr':'cp-migr','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'inp-kill','ph-bm':'inp-bm'};
   Object.keys(phMap).forEach(function(pk){
     var el=document.getElementById(phMap[pk]);
     if(el&&t[pk]) el.placeholder=t[pk];
