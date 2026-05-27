@@ -796,7 +796,7 @@ function setLang(l){
   // id와 번역키가 완전히 1:1 — 모든 span/div/button 텍스트 업데이트
   const uw=document.getElementById('t-uid-warn');if(uw&&t['t-uid-warn'])uw.textContent=t['t-uid-warn'];
   // placeholder 번역
-  var phMap={'ph-migr':'cp-migr','ph-apc1':'100M / 1G','ph-apc2':'100M / 1G','ph-apc3':'100M / 1G','ph-kill':'inp-kill','ph-bm':'inp-bm'};
+  var phMap={'ph-migr':'cp-migr','ph-apc1':'apc1','ph-apc2':'apc2','ph-apc3':'apc3','ph-kill':'inp-kill','ph-bm':'inp-bm'};
   Object.keys(phMap).forEach(function(pk){
     var el=document.getElementById(phMap[pk]);
     if(el&&t[pk]) el.placeholder=t[pk];
