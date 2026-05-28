@@ -478,7 +478,7 @@ input[type=file]{display:none}
 
 <script>
 // ═══════════ 설정 ═══════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzYKHp7kn3rPcytTPPmZR3WI0r9xzJuzhWOJzhw_2HBawNp9aJQPB1olRzEEK_-P3jRAg/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzY_DalI-VcLXLIpipZVDdeubKa00KI27_HfnYXklZSAtuhtoa-658WI3jYkEDodR2XTQ/exec';
 const ADMIN_PW  = '213777';
 
 // ═══════════ 번역 ═══════════
@@ -791,7 +791,7 @@ function setLang(l){
   lang=l;
   document.body.className='lang-'+l;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('on');
+  document.querySelector('.lang-btn[onclick="setLang(\'' + l + '\')"]').classList.add('on');
   const t=TX[l];
   // id와 번역키가 완전히 1:1 — 모든 span/div/button 텍스트 업데이트
   const uw=document.getElementById('t-uid-warn');if(uw&&t['t-uid-warn'])uw.textContent=t['t-uid-warn'];
@@ -967,22 +967,21 @@ function save(){
   }
 
   const f=t; const px=TX[lang]['IND_PX']||'산업 ';
-  document.getElementById('done-info').innerHTML=`
-    <div class="done-row"><span>${f.F_NICK}</span><span>${entry.name}</span></div>
-    <div class="done-row"><span>${f.F_UID}</span><span>${entry.uid}</span></div>
-    <div class="done-row"><span>${f.F_FROM}</span><span>#${entry.fromSid} → #213</span></div>
-    <div class="done-row"><span>${f.F_MODE}</span><span>${entry.mode}</span></div>
-    <div class="done-row"><span>${f.F_KILL||'킬수'}</span><span>${fmtN(entry.killScore)}</span></div>
-    <div class="done-row"><span>${f.F_BM||'블랙머니'}</span><span>${entry.blackMoney?fmtN(entry.blackMoney):'미입력'}</span></div>
-    <div class="done-row"><span>${f.F_MIGR}</span><span>${parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)}M</span></div>
-    <div class="done-row"><span>${f.F_APC1}</span><span>${entry.apc1||'-'}</span></div>
-    <div class="done-row"><span>${f.F_APC2}</span><span>${entry.apc2||'-'}</span></div>
-    <div class="done-row"><span>${f.F_APC3}</span><span>${entry.apc3||'-'}</span></div>
-    <div class="done-row"><span>${f.F_TIME}</span><span>${entry.activeTime}</span></div>
-    <div class="done-row"><span>${f.F_IND}</span><span>${px}${entry.industry}</span></div>
-    <div class="done-row"><span>${f.F_SQ}</span><span>${entry.squad}</span></div>
-    <div class="done-row"><span>${f.F_REC}</span><span>${entry.recommender}</span></div>
-  `;
+  document.getElementById('done-info').innerHTML=
+    '<div class="done-row"><span>'+f.F_NICK+'</span><span>'+entry.name+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_UID+'</span><span>'+entry.uid+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_FROM+'</span><span>#'+entry.fromSid+' → #213</span></div>'+
+    '<div class="done-row"><span>'+f.F_MODE+'</span><span>'+entry.mode+'</span></div>'+
+    '<div class="done-row"><span>'+(f.F_KILL||'짡수')+'</span><span>'+fmtN(entry.killScore)+'</span></div>'+
+    '<div class="done-row"><span>'+(f.F_BM||'블랙머니')+'</span><span>'+(entry.blackMoney?fmtN(entry.blackMoney):'미입력')+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_MIGR+'</span><span>'+parseFloat(document.getElementById('cp-migr').value||'0').toFixed(1)+'M</span></div>'+
+    '<div class="done-row"><span>'+f.F_APC1+'</span><span>'+(entry.apc1||'-')+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_APC2+'</span><span>'+(entry.apc2||'-')+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_APC3+'</span><span>'+(entry.apc3||'-')+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_TIME+'</span><span>'+entry.activeTime+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_IND+'</span><span>'+px+entry.industry+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_SQ+'</span><span>'+entry.squad+'</span></div>'+
+    '<div class="done-row"><span>'+f.F_REC+'</span><span>'+entry.recommender+'</span></div>';
   document.getElementById('form-body').style.display='none';
   document.getElementById('done-screen').classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -990,30 +989,31 @@ function save(){
 
 // ═══════════ 관리 패널 ═══════════
 function renderAdmin(){
-  const db=getDB(); const t=TX[lang];
+  var db=getDB(); var t=TX[lang];
   document.getElementById('admin-count').textContent=db.length;
-  const el=document.getElementById('admin-list');
-  if(!db.length){el.innerHTML=`<div class="empty-msg">${t.EMPTY}</div>`;return;}
-  const px=TX[lang]['IND_PX']||'산업 ';
-  el.innerHTML=`<div class="admin-wrap"><table class="admin-tbl">
-    <thead><tr>${t.ADM_HDR.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
-    <tbody>${db.map(r=>`<tr>
-      <td><strong>${r.name}</strong></td>
-      <td style="font-size:10px;color:var(--text3);font-family:monospace">${r.uid||'-'}</td>
-      <td><span style="background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);color:var(--gold);font-size:11px;padding:2px 7px;border-radius:4px">#${r.fromSid||'-'}</span></td>
-      <td>${r.mode||'-'}</td>
-      <td>${r.cpMigr?autoGrade(r.cpMigr):'<span style="color:var(--text3)">-</span>'}</td>
-      <td style="color:var(--purple2);font-weight:500">${fmtN(r.cpMigr)}</td>
-      <td style="color:var(--gold2)">${r.apc1||'-'}</td>
-      <td style="color:var(--gold2)">${r.apc2||'-'}</td>
-      <td style="color:var(--gold2)">${r.apc3||'-'}</td>
-      <td style="color:var(--accent2);font-size:11px">${r.activeTime||'-'}</td>
-      <td style="color:var(--text2)">${px}${r.industry||'-'}</td>
-      <td>${r.squad||'-'}</td>
-      <td style="color:var(--text2)">${r.recommender||'-'}</td>
-      <td><span class="tag-p">${r.status||'검토중'}</span></td>
-    </tr>`).join('')}
-    </tbody></table></div>`;
+  var el=document.getElementById('admin-list');
+  if(!db.length){el.innerHTML='<div class="empty-msg">'+t.EMPTY+'</div>';return;}
+  var px=TX[lang]['IND_PX']||'산업 ';
+  var hdrs=t.ADM_HDR.map(function(h){return '<th>'+h+'</th>';}).join('');
+  var rows_html=db.map(function(r){
+    return '<tr>'+
+      '<td><strong>'+(r.name||'-')+'</strong></td>'+
+      '<td style="font-size:10px;color:var(--text3);font-family:monospace">'+(r.uid||'-')+'</td>'+
+      '<td>'+(r.fromSid?'#'+r.fromSid:'-')+'</td>'+
+      '<td>'+(r.mode||'-')+'</td>'+
+      '<td>'+(r.cpMigr?parseFloat(r.cpMigr).toFixed(1)+'M':'-')+'</td>'+
+      '<td>'+(r.killScore?Number(r.killScore).toLocaleString():'-')+'</td>'+
+      '<td>'+(r.apc1||'-')+'</td>'+
+      '<td>'+(r.apc2||'-')+'</td>'+
+      '<td>'+(r.apc3||'-')+'</td>'+
+      '<td>'+(r.activeTime||'-')+'</td>'+
+      '<td>'+(r.industry?px+r.industry:'-')+'</td>'+
+      '<td>'+(r.squad||'-')+'</td>'+
+      '<td>'+(r.recommender||'-')+'</td>'+
+      '<td>'+(r.status||'검토중')+'</td>'+
+    '</tr>';
+  }).join('');
+  el.innerHTML='<div class="admin-wrap"><table class="admin-tbl"><thead><tr>'+hdrs+'</tr></thead><tbody>'+rows_html+'</tbody></table></div>';
 }
 
 function exportExcel(){
