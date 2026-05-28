@@ -189,9 +189,9 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .uid-text{font-size:10px;color:var(--text3);font-family:monospace}
 .copy-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 3px;border-radius:3px;font-size:11px;line-height:1;transition:.15s}
 .copy-btn:hover{background:rgba(61,139,255,.15);color:var(--accent2)}
-.srv-tag{display:inline-block;background:rgba(200,151,31,.12);border:1px solid rgba(200,151,31,.35);color:var(--gold2);font-size:11px;padding:3px 8px;border-radius:5px;font-weight:700}
-.mode-solo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2)}
-.mode-group{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2)}
+.srv-tag{display:inline-flex;align-items:center;justify-content:center;background:rgba(200,151,31,.12);border:1px solid rgba(200,151,31,.35);color:var(--gold2);font-size:11px;padding:3px 8px;border-radius:5px;font-weight:700;min-width:48px;text-align:center}
+.mode-solo{display:inline-flex;align-items:center;justify-content:center;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(61,139,255,.1);border:1px solid rgba(61,139,255,.25);color:var(--accent2);min-width:40px}
+.mode-group{display:inline-flex;align-items:center;justify-content:center;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(200,151,31,.1);border:1px solid rgba(200,151,31,.25);color:var(--gold2);min-width:40px}
 .cp-val{font-weight:600;color:var(--purple2)}
 .kill-val{font-weight:600;color:#ff7070;font-size:11px;text-align:center}
 .bm-val{color:var(--gold2);font-size:11px;text-align:center}
@@ -370,7 +370,7 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
         <table>
           <thead>
             <tr>
-              <th>#</th><th>닉네임 / UID</th><th>서버</th><th>방식</th>
+              <th>#</th><th>닉네임 / UID</th><th style="text-align:center">서버</th><th style="text-align:center">방식</th>
               <th>자동등급</th><th>이민 CP</th>
               <th style="text-align:center">킬수</th><th style="text-align:center">블랙머니</th>
               <th>1편대</th><th>2편대</th><th>3편대</th>
@@ -508,8 +508,8 @@ function renderTable(){
   h+='<tr>';
   h+='<td style="color:var(--text3);font-size:11px">'+(i+1)+'</td>';
   h+='<td><div class="name-strong editable" onclick="openEdit('+i+',\'name\',\'닉네임\',\''+escQ(r.name||'')+'\')" title="클릭하여 수정">'+(r.name||'-')+'</div><div class="uid-row"><span class="uid-text">'+(r.uid||'-')+'</span>'+(r.uid&&r.uid!=='-'?'<button class="copy-btn" onclick="copyUID(\''+r.uid+'\')">📋</button>':'')+'</div></td>';
-  h+='<td><span class="srv-tag editable" onclick="openEdit('+i+',\'fromSid\',\'서버 번호\',\''+escQ(r.fromSid||'')+'\')" title="클릭하여 수정">#'+(r.fromSid||'-')+'</span></td>';
-  h+='<td><span class="'+(r.mode==='혼자'?'mode-solo':'mode-group')+'">'+(r.mode||'-')+'</span></td>';
+  h+='<td style="text-align:center"><span class="srv-tag editable" onclick="openEdit('+i+',\'fromSid\',\'서버 번호\',\''+escQ(r.fromSid||'')+'\')" title="클릭하여 수정">#'+(r.fromSid||'-')+'</span></td>';
+  h+='<td style="text-align:center"><span class="'+(r.mode==='혼자'?'mode-solo':'mode-group')+'">'+(r.mode||'-')+'</span></td>';
   h+='<td><span class="tp tp-'+g+'">'+g+'</span></td>';
   h+='<td class="cp-val editable" onclick="openEdit('+i+',\'cpMigr\',\'이민 CP (M단위)\',\''+escQ(r.cpMigr||'')+'\')" title="클릭하여 수정">'+cp+'</td>';
   h+='<td class="kill-val editable" onclick="openEdit('+i+',\'killScore\',\'킬수\',\''+escQ(String(r.killScore||''))+'\')" title="클릭하여 수정">'+kill+'</td>';
@@ -569,8 +569,11 @@ function confirmSaveEdit(){
  if(editTarget.field==='cpMigr'){rows[orig].cpMigr=newVal;rows[orig].autoGrade=grade(newVal);}
  else if(editTarget.field==='fromSid'){rows[orig].fromSid=newVal.replace('#','');}
  else{rows[orig][editTarget.field]=newVal;}
+ var fieldNames={'name':'닉네임','fromSid':'서버','cpMigr':'이민 CP','killScore':'킬수','blackMoney':'블랙머니','apc1':'1편대','apc2':'2편대','apc3':'3편대','activeTime':'활동시간','industry':'산업','squad':'병종','recommender':'추천인'};
+ var fieldLabel=fieldNames[editTarget.field]||editTarget.field;
+ toast('💾 '+name+' '+fieldLabel+' 저장 중...');
  var url=SHEET+'?action=updateField&uid='+encodeURIComponent(uid)+'&field='+encodeURIComponent(editTarget.field)+'&value='+encodeURIComponent(newVal)+'&t='+Date.now();
- fetch(url).then(function(r){return r.json();}).then(function(j){toast(j.result==='ok'?'✅ '+name+' 수정 완료':'⚠ Sheets 반영 실패');}).catch(function(){toast('⚠ 네트워크 오류');});
+ fetch(url).then(function(r){return r.json();}).then(function(j){toast(j.result==='ok'?'✅ '+name+' — '+fieldLabel+' 수정 완료 (구글 시트 반영 완료)':'⚠ Sheets 반영 실패');}).catch(function(){toast('⚠ 네트워크 오류');});
  closeEdit();renderAll();
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeEdit();if(e.key==='Enter'&&document.getElementById('edit-overlay').style.display==='flex')confirmSaveEdit();});
@@ -582,6 +585,7 @@ function changeStatus(sel,idx,status){
  sel.className='status-sel s-'+status;
  var data=getFiltered();var orig=rows.indexOf(data[idx]);
  if(orig>=0){rows[orig].status=status;var uid=rows[orig].uid;
+  toast('💾 '+status+' 처리 중...');
   var url=SHEET+'?action=updateStatus&uid='+encodeURIComponent(uid)+'&status='+encodeURIComponent(status)+'&t='+Date.now();
   fetch(url).then(function(r){return r.json();}).then(function(j){toast(j.result==='ok'?'✅ '+status+' — Sheets 반영':'⚠ Sheets 반영 실패');}).catch(function(){toast('⚠ 네트워크 오류');});}
  renderAll();
