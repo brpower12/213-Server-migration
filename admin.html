@@ -667,32 +667,32 @@ var rows = [], statusFilter = 'all', fServer = '', fGrade = '', fIndustry = '', 
 
 function checkPW() {
  var inputPW = document.getElementById('pw-input').value;
+ // 로컬 비번으로 먼저 확인 (빠른 로그인)
+ if(inputPW === PW){
+  loginSuccess(inputPW); return;
+ }
+ // Sheets 비번 확인 (다른 기기에서 변경된 경우)
  var url = SHEET + '?action=checkPW&pw=' + encodeURIComponent(inputPW) + '&t=' + Date.now();
  fetch(url)
   .then(function(r){return r.json();})
   .then(function(j){
-   if(j.valid){
-    PW=inputPW; localStorage.setItem('a213pw',inputPW);
-    document.getElementById('pw-overlay').classList.add('hide');
-    document.getElementById('app').style.display='block';
-    buildCfg(); loadData();
-   } else {
-    document.getElementById('pw-error').classList.add('on');
-    document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
-   }
+   if(j.valid){ loginSuccess(inputPW); }
+   else { loginFail(); }
   })
-  .catch(function(){
-   if(inputPW===PW){
-    document.getElementById('pw-overlay').classList.add('hide');
-    document.getElementById('app').style.display='block';
-    buildCfg(); loadData();
-   } else {
-    document.getElementById('pw-error').classList.add('on');
-    document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
-   }
-  });
+  .catch(function(){ loginFail(); });
+}
+
+function loginSuccess(pw){
+ PW=pw; localStorage.setItem('a213pw',pw);
+ document.getElementById('pw-overlay').classList.add('hide');
+ document.getElementById('app').style.display='block';
+ buildCfg(); loadData();
+}
+
+function loginFail(){
+ document.getElementById('pw-error').classList.add('on');
+ document.getElementById('pw-input').value='';
+ document.getElementById('pw-input').focus();
 }
 document.getElementById('pw-input').addEventListener('keydown', function(e) {
  if (e.key === 'Enter') checkPW();
